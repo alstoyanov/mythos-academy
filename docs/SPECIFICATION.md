@@ -174,26 +174,38 @@ the smallest!*
   are drawn.
 - **Later:** recorded voice, a real thunder sound, stars for the game card.
 
-### 5.2 Olive Harvest — Arithmetic, the Agora of Numbers
+### 5.2 Olive Harvest — Arithmetic, the Agora of Numbers (built)
 
-*Athena's olive trees are full. Fill each basket with exactly the olives the merchant asks for.*
+*A merchant at his stall in the Agora of Athens needs olives. Fill his baskets with exactly the
+olives he asks for.*
 
-- **Skill:** counting objects to 20; the number that matches a quantity; adding and taking away
-  within 10, then within 20.
-- **Play:** a merchant at a market stall holds up a number (shown and spoken: "Seven olives,
-  please!"). The child drags olives from the tree into a basket (or taps the tree to drop one). The
-  basket counts aloud as olives land. "Done" checks the basket: right — the merchant pays a coin and
-  a new order comes; too many or too few — Glaux says "Let's count together" and counts the basket
-  aloud, pointing at each olive.
-- **Levels:**
-  1. Count to 5, then to 10 (one basket).
-  2. Match: three baskets with olives, tap the one with the number asked for.
-  3. Add: "3 olives and 2 olives" — two baskets pour into one; how many now? (choose from 3 numbers).
-  4. Take away: a hungry goat eats some olives; how many are left?
-  5. Within 20: orders of 11–20 with olives in rows of ten (a full row is a "ten").
-- **Feedback:** the counting voice, coins in a jar (10 coins = a star), a happy merchant.
-- **Assets:** market stall background, olive tree, olives, baskets (empty / full), merchant (3 moods),
-  goat, coins, number tablets 0–20.
+- **Skill:** counting objects to 20; matching a number and a quantity; adding and taking away within
+  10; tens and ones to 20.
+- **Levels** (chosen at the start; all open, each with its best stars). A level is 10 orders:
+  1. **Count the olives** (1–5, then up to 10): the order is a number on a clay tablet and in words
+     ("5 маслини, моля!"). Tap the olive tree to drop an olive into the basket (it is counted aloud as
+     it lands), tap the basket to take one out, then **Done**.
+  2. **Find the basket:** three baskets with different numbers of olives; tap the one asked for.
+  3. **Add the olives:** "3 olives and 2 more. How many altogether?" — two baskets with a big +
+     between them, three number tablets to choose from (sums up to 10).
+  4. **The hungry goat:** a basket of 4–10 olives; the goat walks in and eats 1–5 of them, one by
+     one; how many are left? (three tablets; at least two are left).
+  5. **Up to 20:** orders of 11–20; the olives sit in rows of ten; a **10 olives** button drops a whole
+     row, the tree one at a time.
+- **Forgiving:** nothing is ever taken away. A wrong answer makes the piece wobble and the merchant
+  think: "Let's count together!" — each olive is marked with its number and read aloud (at level 5 a
+  full row counts as "10" at once), then "We have 6. The merchant wants 7." (or "This basket has…",
+  "That makes…", "… are left"), and the child tries again. After two wrong answers in an order the
+  right one glows.
+- **Coins and stars:** each order done pays a coin (it flies from the merchant to the counter,
+  "3 / 10"). Ten coins finish the level: "All the baskets are full!" with stars for the orders right
+  at the first try (8 or more: 3 stars, 5 or more: 2, else 1 — never none), a fanfare, "New best!"
+  when it beats the level's best, and Play again / Next level / Choose a level.
+- **Sounds:** an olive landing, one taken out, a tick per olive counted, the goat munching, a coin.
+- **Built:** `scenes/games/olive_harvest.tscn` (`scripts/games/olive_harvest.gd`; the rules in
+  `olive_rules.gd`, the basket in `olive_basket.gd`, the tablets in `number_tablet.gd`). Its pictures
+  (`assets/images/greek/olive_harvest/`) are part C1 of the prompts; the three merchant moods are cut
+  so that his head is in the same place in each (`tools/prepare_art.py figure … TOP`).
 
 ### 5.3 Temple Builder — Geometry, the Temple Builders of Olympia
 
@@ -406,6 +418,10 @@ Settings and saved.
   shows a message; Greece → each area → back.
 - `tests/translations_test.tscn` (headless): every text has its Bulgarian; the menus come up in
   Bulgarian.
+- `tests/olive_test.tscn` (headless): Olive Harvest's rules on every level over many orders (the
+  ranges, three different choices with the answer among them, a coin per order, nothing taken away,
+  the stars, the hint), then the screen (filling the basket, taking one out, a wrong Done and counting
+  together, the goat and the tablets, the baskets, the end of a level and its stars kept).
 - `tests/thunderbolt_test.tscn` (headless): Zeus' Thunderbolts' rules over many rounds (2–4 different
   numbers in range, the goal switching every 3 rounds, nothing taken away, the hint after two wrong
   picks), then the screen (wrong taps, the hint, a right tap, new clouds).
@@ -418,9 +434,9 @@ Settings and saved.
 1. **Menus** (done): title, settings, world map, Greek map, areas with game cards, placeholders, PC
    and mobile layout.
 2. **Art for the menus** (done): the pictures of `assets/prompts/A_MENUS.md`; markers placed on them.
-3. **Zeus' Thunderbolts** (built; its art: part B).
+3. **Zeus' Thunderbolts** (built; its art: part B). **Olive Harvest** (built; its art: part C1).
 4. **Mini game frame**: the contract of §6, the guide, stars, progress saving, sound.
-5. **Olive Harvest**, then **Temple Builder**, then **The Muses' Letters** (with voice).
+5. **Temple Builder**, then **The Muses' Letters** (with voice).
 6. Android and Windows builds; testing with first graders; then Odysseus' Voyage.
 
 ## 11. Open questions

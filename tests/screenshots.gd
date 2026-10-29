@@ -93,6 +93,59 @@ func _ready() -> void:
 	game.set("_time_left", 0.3)
 	await _wait(1.0)
 	await _shot("7_thunderbolts_results_%s" % tag)
+	# Olive Harvest: the levels, filling the basket, counting together, the goat, the baskets, to 20
+	App.go("res://scenes/games/olive_harvest.tscn")
+	await _wait(0.6)
+	await _shot("8_olives_levels_%s" % tag)
+	var olives := get_tree().current_scene
+	olives.call("_start", 0)
+	await _wait(0.5)
+	var orules: OliveRules = olives.get("_rules")
+	var tree: BaseButton = null
+	for c in olives.find_children("*", "", true, false):
+		if c.get_meta("role", "") == "tree":
+			tree = c
+	for k in orules.target + 1:
+		tree.pressed.emit()
+	await _wait(0.25)
+	await _shot("8_olives_count_flying_%s" % tag)
+	await _wait(0.8)
+	await _shot("8_olives_count_%s" % tag)
+	for c in olives.find_children("*", "Button", true, false):
+		if (c as Button).text == tr("Done"):
+			c.pressed.emit()
+	await _wait(2.0)
+	await _shot("8_olives_counting_together_%s" % tag)
+	olives.call("_start", 1)
+	await _wait(0.6)
+	await _shot("8_olives_match_%s" % tag)
+	olives.call("_start", 2)
+	await _wait(0.6)
+	await _shot("8_olives_add_%s" % tag)
+	olives.call("_start", 3)
+	await _wait(2.6)
+	await _shot("8_olives_goat_eating_%s" % tag)
+	await _wait(2.5)
+	await _shot("8_olives_goat_%s" % tag)
+	olives.call("_start", 4)
+	await _wait(0.4)
+	olives.call("_drop_ten")
+	await _wait(1.3)
+	tree = null
+	for c in olives.find_children("*", "", true, false):
+		if c.get_meta("role", "") == "tree" and not c.is_queued_for_deletion():
+			tree = c
+	for k in 3:
+		tree.pressed.emit()
+	await _wait(0.9)
+	await _shot("8_olives_tens_%s" % tag)
+	orules = olives.get("_rules")
+	orules.order_index = OliveRules.ORDERS - 1
+	orules.coins = OliveRules.ORDERS - 1
+	orules.first_try = 6
+	olives.call("_check", orules.target, olives.get("_basket"))
+	await _wait(2.4)
+	await _shot("8_olives_done_%s" % tag)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://screenshot_progress.cfg"))
 	get_tree().quit()
 

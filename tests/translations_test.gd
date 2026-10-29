@@ -72,6 +72,9 @@ func _texts() -> Array[String]:
 	var zeus: GDScript = load("res://scripts/games/zeus_thunderbolts.gd")
 	for line: String in zeus.get_script_constant_map()["PRAISE"]:
 		_add(out, line)
+	var olives: GDScript = load("res://scripts/games/olive_harvest.gd")
+	for line: String in olives.get_script_constant_map()["LEVEL_NAMES"]:
+		_add(out, line)
 	var area: GDScript = load("res://scripts/area.gd")
 	for line: String in (area.get_script_constant_map()["STATUS"] as Dictionary).values():
 		_add(out, line)
@@ -79,8 +82,8 @@ func _texts() -> Array[String]:
 
 
 func _add(out: Array[String], text: String) -> void:
-	if text != "" and not out.has(text) and text.strip_edges() != "" and not text.is_valid_int():
-		out.append(text)
+	if text != "" and not out.has(text) and RegEx.create_from_string("[A-Za-z]").search(text) != null:
+		out.append(text)  # (texts without a letter, a number or a "+", need no translation)
 
 
 func _scripts(dir: String) -> Array[String]:

@@ -6,7 +6,7 @@ One complete prompt for every picture of the game, ready to copy: nothing needs 
 |---|---|---|---|
 | A — the menus | [A_MENUS.md](A_MENUS.md) | 29 | done: in the game, except the new A.3 (the Bulgarian logo) |
 | B — Zeus' Thunderbolts (Arithmetic) | [B_ZEUS_THUNDERBOLTS.md](B_ZEUS_THUNDERBOLTS.md) | 13 | **to make now**: the game is built and waits for them |
-| C — the later Grade 1 mini games | [C_LATER_GAMES.md](C_LATER_GAMES.md) | 82 | for later |
+| C — the later Grade 1 mini games | [C_LATER_GAMES.md](C_LATER_GAMES.md) | 82 | C1 (Olive Harvest) done: in the game; the rest for later |
 
 How to use them:
 

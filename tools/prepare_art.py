@@ -13,7 +13,7 @@ KIND:
   cutout W H         a character or object on a white background: the white around it made transparent
                      (only white reached from the edges, so white inside the picture stays), cropped,
                      centred in W x H with a small margin, transparent PNG.
-  figure W H SCALE CX [CROP_Y|-] [FADE]
+  figure W H SCALE CX [CROP_Y|-] [FADE|-] [TOP]
                      a character on a white background, for a set of poses that must match: cut out as
                      for "cutout" (but the white is only followed in from the top and the sides, so a
                      figure that runs into the bottom edge keeps its white clothes), optionally cut off
@@ -21,7 +21,10 @@ KIND:
                      heads are the same size), the source column CX (the middle of the body) placed at
                      45% across W x H, and the figure standing on the bottom edge. FADE "x0,y0,x1,y1"
                      (source pixels): a box where pale, nearly white pixels fade out, for a soft glow
-                     that is not quite white (e.g. around a thunderbolt in a hand). Transparent PNG.
+                     that is not quite white (e.g. around a thunderbolt in a hand). TOP: instead of
+                     standing on the bottom edge, the top of the figure is TOP pixels below the top
+                     edge and what does not fit is cut off at the bottom (for half figures cut off at
+                     the bottom of their picture, whose heads must line up). Transparent PNG.
   erase FIXES ID     paints over what a generator added that the game does not want (names written on a
                      map, its own marker discs): the boxes listed under ID in the JSON file FIXES, as
                      fractions of the picture (x0, y0, x1, y1). In a "text" box only the lettering is
@@ -106,7 +109,7 @@ def fade_pale(rgba, box):
     return Image.fromarray(a.astype(np.uint8), "RGBA")
 
 
-def figure(img, w, h, scale, cx, crop_y=None, fade=None):
+def figure(img, w, h, scale, cx, crop_y=None, fade=None, top=None):
     if crop_y is not None:
         img = img.crop((0, 0, img.width, int(crop_y)))
     rgba = cutout_rgba(img, bottom=False)
@@ -117,7 +120,8 @@ def figure(img, w, h, scale, cx, crop_y=None, fade=None):
     part = part.resize((max(1, round(part.width * scale)), max(1, round(part.height * scale))), Image.LANCZOS)
     out = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     x = round(w * 0.45 - (cx - box[0]) * scale)
-    out.paste(part, (x, h - part.height), part)  # (pasted: it may stick out of the canvas at a side)
+    y = h - part.height if top is None else int(top)
+    out.paste(part, (x, y), part)  # (pasted: it may stick out of the canvas at a side or the bottom)
     return out
 
 
@@ -191,8 +195,9 @@ def main():
         save(medallion(img, int(args[0])), dst)
     elif kind == "figure":
         crop = float(args[4]) if len(args) > 4 and args[4] != "-" else None
-        fade = tuple(int(v) for v in args[5].split(",")) if len(args) > 5 else None
-        save(figure(img, int(args[0]), int(args[1]), float(args[2]), float(args[3]), crop, fade), dst)
+        fade = tuple(int(v) for v in args[5].split(",")) if len(args) > 5 and args[5] != "-" else None
+        top = float(args[6]) if len(args) > 6 else None
+        save(figure(img, int(args[0]), int(args[1]), float(args[2]), float(args[3]), crop, fade, top), dst)
     elif kind == "cutout":
         save(fit(cutout_rgba(img), int(args[0]), int(args[1])), dst)
     else:

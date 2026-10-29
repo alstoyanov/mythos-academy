@@ -19,5 +19,6 @@ Tests:
 
     godot --headless --path . res://tests/navigation_test.tscn
     godot --headless --path . res://tests/thunderbolt_test.tscn
+    godot --headless --path . res://tests/olive_test.tscn
     godot --headless --path . res://tests/translations_test.tscn
     godot --path . res://tests/screenshots.tscn -- --out=C:/some/folder --size=1280x720 --lang=bg

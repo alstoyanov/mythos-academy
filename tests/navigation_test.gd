@@ -48,6 +48,8 @@ func _ready() -> void:
 		var card := _button("Coming soon")
 		if card == null:
 			card = _button("Coming later")
+		if card == null:
+			card = _button("Play")
 		_check(card != null, "%s lists its game" % id)
 		App.back()
 		await _settle()

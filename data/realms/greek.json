@@ -13,7 +13,8 @@
          "blurb": "Help Zeus strike the cloud with the biggest number, or the smallest!", "status": "ready",
          "scene": "res://scenes/games/zeus_thunderbolts.tscn"},
         {"id": "olive_harvest", "title": "Olive Harvest", "skill": "Counting, adding and taking away within 20",
-         "blurb": "Fill Athena's baskets with exactly the right number of olives.", "status": "planned"}
+         "blurb": "Fill Athena's baskets with exactly the right number of olives.", "status": "ready",
+         "scene": "res://scenes/games/olive_harvest.tscn"}
       ]
     },
     {

@@ -19,6 +19,10 @@ const SOUNDS := {
 	"oops": ["pick", -9.0, 0.0],  # a wrong cloud wobbles: soft, never a "wrong" buzz
 	"whoosh": ["feather", -10.0, 0.05],  # new clouds float in
 	"fanfare": ["win", -5.0, 0.0],  # a round is over (a new best, the time is up)
+	"drop": ["place", -7.0, 0.08],  # an olive lands in the basket
+	"pop": ["pick", -8.0, 0.08],  # an olive taken out of the basket
+	"coin": ["special", -6.0, 0.0],  # a coin earned
+	"munch": ["crumble_1", -9.0, 0.1],  # the goat eats an olive
 }
 
 var _voices: Array[AudioStreamPlayer] = []
