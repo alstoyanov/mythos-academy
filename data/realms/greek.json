@@ -1,0 +1,44 @@
+{
+  "format_version": 1,
+  "id": "greek",
+  "name": "Ancient Greece",
+  "grade": 1,
+  "guide": "Glaux, the little owl of Athena",
+  "areas": [
+    {
+      "id": "arithmetic", "glyph": "1+2", "subject": "Arithmetic", "name": "The Agora of Numbers",
+      "place": "The market of Athens", "color": "#e0a030", "map_pos": [0.47, 0.41],
+      "games": [
+        {"id": "zeus_thunderbolts", "title": "Zeus' Thunderbolts", "skill": "Comparing numbers: the biggest and the smallest",
+         "blurb": "Help Zeus strike the cloud with the biggest number, or the smallest!", "status": "ready",
+         "scene": "res://scenes/games/zeus_thunderbolts.tscn"},
+        {"id": "olive_harvest", "title": "Olive Harvest", "skill": "Counting, adding and taking away within 20",
+         "blurb": "Fill Athena's baskets with exactly the right number of olives.", "status": "planned"}
+      ]
+    },
+    {
+      "id": "geometry", "glyph": "Δ", "subject": "Geometry", "name": "The Temple Builders",
+      "place": "Olympia", "color": "#5aa05a", "map_pos": [0.24, 0.7],
+      "games": [
+        {"id": "temple_builder", "title": "Temple Builder", "skill": "Naming and matching flat shapes",
+         "blurb": "Help the builders finish a temple with the right shaped stones.", "status": "planned"}
+      ]
+    },
+    {
+      "id": "geography", "glyph": "N", "subject": "Geography", "name": "The Islands of Odysseus",
+      "place": "The Aegean Sea", "color": "#3a8fc0", "map_pos": [0.69, 0.69],
+      "games": [
+        {"id": "odysseus_voyage", "title": "Odysseus' Voyage", "skill": "Left, right, up and down; land and sea",
+         "blurb": "Steer Odysseus' ship home, one direction at a time.", "status": "later"}
+      ]
+    },
+    {
+      "id": "language", "glyph": "Aa", "subject": "Language", "name": "The Grove of the Muses",
+      "place": "Mount Helicon", "color": "#b060b0", "map_pos": [0.185, 0.28],
+      "games": [
+        {"id": "muses_letters", "title": "The Muses' Letters", "skill": "Letter sounds and first letters of words",
+         "blurb": "The Muses lost their letters: find the letter each picture starts with.", "status": "planned"}
+      ]
+    }
+  ]
+}

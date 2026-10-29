@@ -1,0 +1,11 @@
+{
+  "format_version": 1,
+  "mythologies": [
+    {"id": "greek", "name": "Ancient Greece", "grade": 1, "available": true, "color": "#3f7fc4", "map_pos": [0.33, 0.365], "realm": "res://data/realms/greek.json"},
+    {"id": "egyptian", "name": "Ancient Egypt", "grade": 2, "available": false, "color": "#d4a63a", "map_pos": [0.34, 0.615]},
+    {"id": "norse", "name": "The Norse Lands", "grade": 3, "available": false, "color": "#7a8fa6", "map_pos": [0.28, 0.11]},
+    {"id": "mesopotamian", "name": "Mesopotamia", "grade": 4, "available": false, "color": "#b5653a", "map_pos": [0.53, 0.48]},
+    {"id": "indian", "name": "Ancient India", "grade": 5, "available": false, "color": "#e07b39", "map_pos": [0.695, 0.57]},
+    {"id": "chinese", "name": "Ancient China", "grade": 6, "available": false, "color": "#c23b32", "map_pos": [0.8, 0.35]}
+  ]
+}

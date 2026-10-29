@@ -1,0 +1,431 @@
+# Mythos Academy — Specification
+
+Version 0.2 · 2026-10-29 · Status: the menus (mythology and area selection) and the first mini game, Zeus'
+Thunderbolts (arithmetic), are built; the other mini games are proposals.
+
+## 1. Vision
+
+Mythos Academy is an educational game of short mini games for primary school children, set in the
+world of myths. **Each school grade has its own mythology**, and inside it the children practise the
+subjects of that grade (numbers, shapes, maps, letters) in mini games told as small adventures of
+that mythology's heroes and places.
+
+The child starts on a map of the ancient world, picks a land (a mythology), and in that land's own
+map picks a place where a subject lives — the Agora of Athens for numbers, the temple builders of
+Olympia for shapes, and so on. Each place holds a few mini games.
+
+The first release is **Grade 1, in Ancient Greece**.
+
+Goals:
+
+- Learning first: every mini game practises one skill of the grade's curriculum, with a clear goal
+  and immediate, kind feedback.
+- No reading needed to play: a first grader may not read yet. Every instruction is also spoken, and
+  every button also has a picture.
+- Short and calm: a round lasts 2–4 minutes; there is no timer pressure and no losing — mistakes get
+  a hint and another try.
+- Myth as the setting, friendly: gods, heroes and creatures appear as kind guides and helpers. No
+  frightening scenes for the young grades.
+- Safe: offline, no ads, no in-app purchases, no accounts, no data leaving the device.
+
+## 2. Audience and platforms
+
+| | |
+|---|---|
+| Players | Children of 6–7 (Grade 1) first; later grades up to 11–12. A parent or teacher sets up the game. |
+| Platforms | PC (Windows first; macOS and Linux need no extra work in Godot) and mobile (Android first, then iOS). Tablets and phones. |
+| Orientation | Landscape. On phones and tablets the game turns with the device between the two landscape sides; on a PC the window can have any size and shape. |
+| Input | Touch, mouse, and keyboard or gamepad focus (arrows/Tab to move, Enter to choose, Esc or Android Back to go back). |
+| Engine | Godot 4.7, GDScript, the Compatibility renderer (runs on the widest range of phones and older PCs). |
+
+## 3. Structure of the game
+
+### 3.1 Grades and mythologies
+
+One mythology per grade. The world map shows them all from the start; only the grades that are
+built can be opened, the others are shown locked with "coming soon". The proposed order goes from
+the most familiar myths to the less familiar, and roughly east across the old world:
+
+| Grade | Mythology | Guide (proposal) | State |
+|---|---|---|---|
+| 1 | Ancient Greece | Glaux, the little owl of Athena | **this release** |
+| 2 | Ancient Egypt | a young scribe and Thoth's ibis | locked |
+| 3 | The Norse Lands | Huginn and Muninn, Odin's ravens | locked |
+| 4 | Mesopotamia | a scribe of Uruk with a clay tablet | locked |
+| 5 | Ancient India | a young elephant (Ganesha's helper) | locked |
+| 6 | Ancient China | a jade rabbit from the Moon | locked |
+
+The list is data (`data/mythologies.json`): adding a grade or changing the order needs no code.
+
+### 3.2 Learning areas
+
+Every mythology's map has the same four areas, each at a place of its myths:
+
+| Area | Subject | In Ancient Greece (Grade 1) | Symbol |
+|---|---|---|---|
+| Arithmetic | numbers, counting, adding and taking away | **The Agora of Numbers** — the market of Athens | 1+2 |
+| Geometry | shapes, sizes, patterns, positions | **The Temple Builders** — Olympia | Δ |
+| Geography | directions, maps, land and water | **The Islands of Odysseus** — the Aegean Sea | N |
+| Language | letters, sounds, words, reading | **The Grove of the Muses** — Mount Helicon | Aa |
+
+More areas (e.g. science, music) can be added later per grade; an area is an entry in the realm's
+data file.
+
+### 3.3 Screens
+
+```
+Title screen ──Play──▶ World map ──open land──▶ Realm map ──area──▶ Area ──game──▶ Mini game (later)
+     │                    │  locked land: "Grade N. Coming soon!"        │
+     └─Settings (panel)   └──────────────◀── Back ◀────────────── Back ◀─┘
+```
+
+- **Back** is always the round "‹" button at the top left, Android's Back, or Esc. It goes to the
+  screen before; on the title screen, Android's Back leaves the app.
+- Every screen works at any window size: the maps keep their shape and fit inside the screen, the
+  sea fills the rest; markers stay on their places.
+
+## 4. The menus (built)
+
+### 4.1 Title screen (`scenes/main_menu.tscn`)
+
+- Background: the title picture (`assets/images/ui/title_background.png`); until it exists, the world
+  map placeholder, faded.
+- The logo (`ui/logo.png`) or, until it exists, the name "Mythos Academy" and the line "Learn and play
+  with the heroes of myth" on a parchment panel. Glaux the owl (`ui/mascot_owl.png`) above it when
+  the picture exists.
+- **Play** — the largest button, focused at start — opens the world map.
+- **Settings** opens a panel over the menu: Music (on/off; kept for when there is music), Sounds,
+  Read aloud (instructions spoken with the device's text to speech, where it has a voice for the
+  language), Full screen (PC only), and Language (Български, English). Done or Back closes it. The
+  choices are saved (`user://settings.cfg`).
+- **Quit** — PC only (a phone app is left with Home or Back).
+
+Later (see §8): a **Parents** button behind a parental gate (hold for 3 seconds), with child
+profiles, progress, and the language.
+
+### 4.2 World map (`scenes/world_map.tscn`)
+
+- The map of the ancient world (`world/world_map.png`, 16:9) with a marker for each mythology at its
+  place (`map_pos` in the data, 0–1 across the map).
+- A marker is a round badge in the mythology's colour with its emblem (`world/marker_<id>.png`; until
+  then the grade number), and a plate under it with the land's name and "Grade N".
+- An open land bobs gently and grows when pointed at or focused; tapping it opens its realm map.
+- A locked land is grey with a padlock; tapping it shows "Ancient Egypt opens in Grade 2. Coming
+  soon!" for a few seconds (later also spoken by the guide).
+- The banner at the top says "Choose a land to explore".
+
+### 4.3 Realm map (`scenes/realm_map.tscn`) — Ancient Greece
+
+- The map of the land (`greek/realm_map.png`): the Greek mainland, the Peloponnese and the Aegean
+  islands, with a marker for each area at its place (Helicon, Athens, Olympia, the islands).
+- Area markers: the area's colour, its emblem (`greek/area_<id>.png`; until then its symbol), the
+  subject and the place's name.
+- Banner: "Ancient Greece — Grade 1 · Choose a place to learn".
+- Later: Glaux flies to the chosen place before the area opens, and greets the child on first visit.
+
+### 4.4 Area (`scenes/area.tscn`)
+
+- The area's background picture (`greek/area_<id>_background.png`; until then a wash of its colour).
+- Banner: the subject and the place ("Arithmetic — The Agora of Numbers · The market of Athens").
+- A card per mini game: its picture (`greek/game_<id>.png`; until then a tile of the area's colour with
+  its symbol), its name, the skill it practises, one line about it, and a button: "Play" for a built
+  game (status `ready`, with its `scene`), which opens it; otherwise "Coming soon" (or "Coming later"),
+  which only shows a message.
+- Later: the stars won so far on each card.
+
+## 5. Grade 1 mini games
+
+The first arithmetic game, Zeus' Thunderbolts, is built (§5.1). The others are proposals: three
+more mini games, then one for geography. They will share one frame (§6): a few levels, a spoken
+instruction, no timer, a hint after a mistake, up to 3 laurel stars per level.
+
+The skills follow the usual Grade 1 goals (e.g. the Common Core and most European curricula):
+numbers to 20, comparing numbers, adding and taking away to 20, naming flat shapes, letter sounds.
+
+### 5.1 Zeus' Thunderbolts — Arithmetic, the Agora of Numbers (built)
+
+*Clouds are gathering over Mount Olympus. Help Zeus strike the cloud with the biggest number — or
+the smallest!*
+
+- **Skill:** comparing numbers: which is the biggest, which is the smallest, of 2 to 4 numbers.
+- **Play:** Zeus stands on Olympus at the lower left. Each round, 2–4 clouds float in, each with a
+  different number. The instruction at the top says (and reads aloud) "Hit the BIGGEST number!" or
+  "Hit the SMALLEST number!", with a picture: a pile of five coins for biggest, one coin for
+  smallest. The child taps a cloud; Zeus throws a thunderbolt at it.
+  - The right cloud bursts into sparks, the score goes up by one, Zeus cheers ("Great!", "Well
+    done!", …) and new clouds come.
+  - A wrong cloud only wobbles; Zeus encourages ("Almost! Look for the biggest number."). Nothing is
+    taken away, and after two wrong taps in a round the right cloud glows.
+- **Changing the goal:** every 3 rounds the goal switches between biggest and smallest; a big
+  message announces it ("Now find the SMALLEST number!") before the clouds come.
+- **Growing gently** with the score: 2 clouds and numbers 1–10 to start; up to 3 clouds from 3
+  points, up to 4 from 8; numbers up to 20 from 15 points. Every 10 points Zeus celebrates.
+- **Timed rounds:** the game starts with a choice of 1, 2 or 3 minutes, each showing its best score
+  ("Рекорд"). The clock is under the score; it stops while a new goal is announced, and in the last 10
+  seconds it turns orange and ticks. When the time is up the score is shown, with a fanfare, and
+  "New best!" if it beats the best for that length; then Play again or Change time.
+- **Score:** a laurel badge in the top right corner; it only ever goes up. The best score of each
+  length is kept on the device (`user://progress.cfg`). Back returns to the area.
+- **Sounds:** a zap as Zeus throws, a sparkle as the right cloud bursts, a soft knock for a wrong one
+  (never a "wrong" buzz), a whoosh as new clouds come, ticks in the last seconds, a fanfare at the end.
+- **Built:** `scenes/games/zeus_thunderbolts.tscn` (`scripts/games/zeus_thunderbolts.gd`, the clouds in
+  `number_cloud.gd`, the rules in `thunderbolt_rules.gd`). Its pictures are in
+  `assets/prompts/B_ZEUS_THUNDERBOLTS.md`; until they exist, Zeus, the sky, the clouds and the thunderbolt
+  are drawn.
+- **Later:** recorded voice, a real thunder sound, stars for the game card.
+
+### 5.2 Olive Harvest — Arithmetic, the Agora of Numbers
+
+*Athena's olive trees are full. Fill each basket with exactly the olives the merchant asks for.*
+
+- **Skill:** counting objects to 20; the number that matches a quantity; adding and taking away
+  within 10, then within 20.
+- **Play:** a merchant at a market stall holds up a number (shown and spoken: "Seven olives,
+  please!"). The child drags olives from the tree into a basket (or taps the tree to drop one). The
+  basket counts aloud as olives land. "Done" checks the basket: right — the merchant pays a coin and
+  a new order comes; too many or too few — Glaux says "Let's count together" and counts the basket
+  aloud, pointing at each olive.
+- **Levels:**
+  1. Count to 5, then to 10 (one basket).
+  2. Match: three baskets with olives, tap the one with the number asked for.
+  3. Add: "3 olives and 2 olives" — two baskets pour into one; how many now? (choose from 3 numbers).
+  4. Take away: a hungry goat eats some olives; how many are left?
+  5. Within 20: orders of 11–20 with olives in rows of ten (a full row is a "ten").
+- **Feedback:** the counting voice, coins in a jar (10 coins = a star), a happy merchant.
+- **Assets:** market stall background, olive tree, olives, baskets (empty / full), merchant (3 moods),
+  goat, coins, number tablets 0–20.
+
+### 5.3 Temple Builder — Geometry, the Temple Builders of Olympia
+
+*The builders of Olympia are raising a temple for Zeus. Find the stone that fits each gap.*
+
+- **Skill:** recognising and naming circle, square, triangle, rectangle (later oval, half circle);
+  matching a shape whatever its size, colour or turn; simple patterns.
+- **Play:** a temple is drawn in outline, with gaps of different shapes (a triangle roof, square
+  blocks, round shields, rectangle steps). Stones of different shapes lie on a cart; the child drags
+  each into a gap of the same shape. A builder names the shape as it clicks in ("A triangle!"). A
+  stone that does not fit wobbles and slides back to the cart.
+- **Levels:**
+  1. Shapes in the same colour and size as their gaps.
+  2. Same shape, different size or turned (a turned square is still a square).
+  3. "Bring me a triangle": pick the named shape among others, with no outline to match.
+  4. Patterns: finish a frieze (circle, square, circle, square, …).
+  5. Count the sides and corners: "Which stone has 3 corners?".
+- **Feedback:** the temple grows, columns rise, at the end the temple is finished and lit up (a star
+  per temple).
+- **Assets:** Olympia background, temple outlines (3 temples), stones in 4–6 shapes and 3 colours,
+  cart, builder (3 moods), frieze tiles.
+
+### 5.4 The Muses' Letters — Language, the Grove of the Muses
+
+*A wind has scattered the Muses' letters. Help them find the letter each picture starts with.*
+
+- **Skill:** letter sounds (phonics); the first sound of a word; matching capital and small letters;
+  later building short words (3 letters).
+- **Play:** a Muse shows a picture card and says the word ("Owl"). Three letter tablets hang on a
+  laurel branch; the child taps the one the word starts with ("O"). Right: the tablet flies into the
+  Muse's lyre and plays a note; wrong: the Muse says the word slowly, stretching its first sound.
+- **Levels:**
+  1. The first sound, 3 letters to choose from (a set of 8 letters at a time, taught in order).
+  2. Capital to small letter: match "A" with "a".
+  3. The last sound of a word.
+  4. Build a word: drag 3 tablets in order under a picture (C-A-T).
+- **Language:** the letters, words and voice depend on the language the child learns to read in, so
+  each language has its own word list and recordings: Bulgarian first (the Cyrillic alphabet, with
+  Bulgarian words for the pictures), then English (§9.5).
+- **Feedback:** the lyre fills with notes; a full lyre plays a little tune (a star).
+- **Assets:** grove background, the nine Muses (or 3 to start), lyre, laurel branch, letter tablets
+  (an alphabet in clay), picture cards for the word list (owl, apple, sun, …).
+
+### 5.5 Next: Odysseus' Voyage — Geography, the Islands of Odysseus
+
+*Odysseus is lost at sea. Give him the directions home, one step at a time.*
+
+- **Skill:** left, right, up, down (forwards, back); reading a simple grid map; land and water.
+- **Play:** a grid of sea and islands seen from above; arrows to tap to move the ship one square;
+  later, plan a route of 3–5 arrows and press "Sail".
+- Shown in the menus as "Coming later".
+
+## 6. Mini game frame (for when the games are built)
+
+Every mini game is a scene that follows one contract, so the menus can open any of them:
+
+- `start(level: int)` begins a level; the game says its instruction (text and voice).
+- It emits `finished(stars: int)` (0–3) at the end of a level and `quit()` when the child goes back.
+- Back (button, Esc, Android Back) pauses it and asks "Leave the game?" with two picture buttons.
+- Common pieces: the guide (Glaux) with a speech bubble and voice line, a hint after two mistakes,
+  the star screen, a "next level" button, drag and drop that works the same with a finger and a
+  mouse.
+- Progress per child (later: per profile): the levels done and the stars per game, saved in
+  `user://progress.json`; the area cards show the stars.
+- Difficulty adapts gently: three right answers in a row move on to harder items within a level;
+  two mistakes in a row bring easier ones.
+
+## 7. Design rules for young children
+
+- **Touch targets** at least 88 px of the 1280 × 720 layout (about 9 mm on a phone); main actions
+  bigger. Nothing important near the screen's edges, where hands rest.
+- **No reading needed:** every instruction is spoken; every button has a picture or symbol; text is
+  for parents and early readers.
+- **Colour is never the only clue:** areas and choices also differ by symbol and shape (colour
+  blindness).
+- **No time pressure, no losing, no lives.** Mistakes get a gentle hint and another try.
+- **Short rounds** (2–4 minutes) with a clear end; praise is specific ("You counted seven!").
+- Calm motion: no flashing, no sudden loud sounds; music can be turned off.
+- Kind myths: the guides and creatures are friendly; no scary monsters in Grades 1–2.
+
+## 8. Later features
+
+- Parents area behind a parental gate: child profiles (name, picture, grade), progress per game, the
+  language, sound, a "how to play" page.
+- Voice for every instruction (recorded or high-quality text to speech) in each language.
+- Music per mythology, sounds for taps, drops, right and wrong answers.
+- Rewards: a collection of myth cards (gods, heroes, creatures) earned with stars, each with a short
+  child-friendly story read aloud.
+- More grades and mythologies, opened one at a time.
+
+## 9. Technical design
+
+### 9.1 Project
+
+| | |
+|---|---|
+| Layout | 1280 × 720, stretch mode `canvas_items`, aspect `expand` (wider or taller screens get more room, nothing is cut off) |
+| Renderer | Compatibility (OpenGL ES 3 / WebGL 2 class) |
+| Orientation | sensor landscape on phones and tablets |
+| Input | touch emulates the mouse; every menu control also takes keyboard and gamepad focus |
+| Android Back | handled by the game (`quit_on_go_back` off): Back goes one screen back |
+
+```
+mythos-academy/
+  project.godot
+  data/
+    mythologies.json        the world map: one mythology per grade
+    realms/greek.json       Ancient Greece: its areas and their mini games
+  scripts/
+    app.gd                  autoload "App": the screen being shown, Back, the settings
+    catalog.gd              reads data/
+    ui.gd                   the theme, buttons, banner, messages, pictures from assets/images
+  tools/
+    prepare_art.py          generated pictures to the game's files (crop, cut out, paint out labels)
+    art_fixes.json          what to paint out of which picture
+    map_view.gd             a map that fits the screen, with markers (and placeholder maps)
+    map_marker.gd           a round marker: badge, emblem, label, locked state
+    main_menu.gd, world_map.gd, realm_map.gd, area.gd   the screens
+  scenes/                   one scene per screen
+  assets/
+    images/                 the art (see assets/prompts/IMAGE_PROMPTS.md for every file)
+    prompts/                IMAGE_PROMPTS.md (the index), A_MENUS.md, B_ZEUS_THUNDERBOLTS.md, C_LATER_GAMES.md
+  tests/                    navigation test, screenshots
+  docs/SPECIFICATION.md     this document
+```
+
+### 9.2 Content data
+
+`data/mythologies.json`:
+
+```json
+{"format_version": 1, "mythologies": [
+  {"id": "greek", "name": "Ancient Greece", "grade": 1, "available": true, "color": "#3f7fc4",
+   "map_pos": [0.43, 0.38], "realm": "res://data/realms/greek.json"}
+]}
+```
+
+- `map_pos`: the marker's place on the world map, 0–1 from the left and from the top. Change it to
+  match the painted map.
+- `available`: whether the land can be opened (it also needs a `realm` file).
+
+`data/realms/<id>.json`:
+
+```json
+{"format_version": 1, "id": "greek", "name": "Ancient Greece", "grade": 1, "guide": "Glaux, the little owl of Athena",
+ "areas": [
+   {"id": "arithmetic", "glyph": "1+2", "subject": "Arithmetic", "name": "The Agora of Numbers",
+    "place": "The market of Athens", "color": "#e0a030", "map_pos": [0.56, 0.52],
+    "games": [{"id": "olive_harvest", "title": "Olive Harvest", "skill": "...", "blurb": "...",
+               "status": "planned"}]}
+ ]}
+```
+
+- A game's `status`: `planned` ("Coming soon"), `later` ("Coming later"), `ready` (playable; the
+  game's scene will be named by a `scene` field then).
+
+### 9.3 Art
+
+The screens look for their pictures under `assets/images/` by fixed names (listed with their prompts
+in `assets/prompts/IMAGE_PROMPTS.md`). A missing picture is never an error: the screen draws a
+placeholder (a simple map, a coloured badge with a symbol, a coloured tile), so art can be added one
+file at a time. Pictures are imported with mipmaps off and VRAM compression for mobile (ETC2/ASTC).
+A `.jpg` of the same name is found too (opaque pictures are kept as JPG to keep the project small).
+
+Generated pictures are turned into the game's files with `tools/prepare_art.py`: backgrounds and cards
+cropped to shape, maps resized whole, medallions cut out as clean circles, characters and the logo cut
+out of their white background (only the white joined to the edges, so white inside a picture stays).
+Its `erase` step paints out what a generator added against the prompt, such as names written on a map
+or its own marker discs; the boxes for each picture are listed in `tools/art_fixes.json`.
+
+### 9.4 Saving
+
+- `user://settings.cfg`: music, sounds, read aloud, full screen, language.
+- `user://progress.cfg`: the best score of each timed game and length.
+- Later `user://progress.json`: profiles, stars per game and level.
+
+Nothing is sent anywhere.
+
+### 9.4a Sound
+
+`scripts/sound.gd` (autoload `Sound`) plays the sound effects; Settings' "Sounds" turns them off. Every
+button clicks by itself (Back plays its own sound, switches a toggle sound); the games call
+`Sound.play("name")`. The sounds are in `assets/audio/sfx/`, taken from Chasm of Knights: Kenney's
+Interface Sounds (CC0) and sounds made for that game; sources and licences in
+`assets/audio/sfx/CREDITS.txt`. There are no hover labels (tooltips) anywhere: a child on a phone never
+sees them, and on a PC they only got in the way.
+
+### 9.5 Languages
+
+The game is in **Bulgarian first** (the language it starts in) and English. The language is chosen in
+Settings and saved.
+
+- The text in the code and in the content files (`data/`) is English and is the key of each text;
+  `scripts/translations.gd` (`Translations`) has the Bulgarian for every key and makes it a Godot
+  translation at start. Labels and buttons translate themselves; text drawn by hand (map markers) or
+  put together with numbers ("%d клас") goes through `tr()`.
+- To add a language: a table like `Translations.BG`, an entry in `Translations.LANGUAGES`.
+- `tests/translations_test.tscn` fails if any text of the data or the scripts has no Bulgarian.
+- Pictures carry no words, except the logo: `ui/logo.png` (English) and `ui/logo_<language>.png`
+  (`logo_bg.png`); without the language's logo the title screen writes the name in the language.
+- Read aloud speaks with a voice of the chosen language only; a device without a Bulgarian voice stays
+  silent in Bulgarian rather than reading it with an English voice. (Recorded voices later.)
+- Bulgarian wording: grades as "1 клас"; "най‑голямото" and "най‑малкото" are written with a
+  non-breaking hyphen so they never break across lines.
+- Language mini games need their own content per language (see §5.4).
+
+### 9.6 Tests
+
+- `tests/navigation_test.tscn` (headless): the content loads; Play → world map; a locked land only
+  shows a message; Greece → each area → back.
+- `tests/translations_test.tscn` (headless): every text has its Bulgarian; the menus come up in
+  Bulgarian.
+- `tests/thunderbolt_test.tscn` (headless): Zeus' Thunderbolts' rules over many rounds (2–4 different
+  numbers in range, the goal switching every 3 rounds, nothing taken away, the hint after two wrong
+  picks), then the screen (wrong taps, the hint, a right tap, new clouds).
+- `tests/screenshots.tscn` (window): every screen at a given size (PC 1280×720, phone 915×412,
+  tablet 1024×768) and language (`--lang=bg` or `en`), and Zeus' Thunderbolts while it is played, for
+  a visual check.
+
+## 10. Milestones
+
+1. **Menus** (done): title, settings, world map, Greek map, areas with game cards, placeholders, PC
+   and mobile layout.
+2. **Art for the menus** (done): the pictures of `assets/prompts/A_MENUS.md`; markers placed on them.
+3. **Zeus' Thunderbolts** (built; its art: part B).
+4. **Mini game frame**: the contract of §6, the guide, stars, progress saving, sound.
+5. **Olive Harvest**, then **Temple Builder**, then **The Muses' Letters** (with voice).
+6. Android and Windows builds; testing with first graders; then Odysseus' Voyage.
+
+## 11. Open questions
+
+- Which curriculum to follow exactly (country), so each grade's skills match the school year?
+- The order of mythologies per grade (§3.1) is a proposal.
+- Recorded voices or text to speech?
+- Child profiles from the first release, or later?
