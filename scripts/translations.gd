@@ -88,7 +88,13 @@ const BG := {
 	"Brilliant!": "Чудесно!",
 	"You got it!": "Позна!",
 	"%d thunderbolts! You are amazing!": "%d мълнии! Страхотно се справяш!",
-	"How long do you want to play?": "Колко време искаш да играеш?",
+	"Choose a game and how long to play": "Избери игра и колко време да играеш",
+	"Numbers": "Числа",
+	"A sum in one cloud": "Сметка в един облак",
+	"Sums in both clouds": "Сметки в двата облака",
+	"Work out the clouds! Find the BIGGEST number!": "Пресметни облаците! Намери НАЙ-ГОЛЯМОТО число!",
+	"%s makes %d.": "%s прави %d.",
+	"First work out %s!": "Първо пресметни %s!",
 	"1 minute": "1 минута",
 	"2 minutes": "2 минути",
 	"3 minutes": "3 минути",
@@ -97,7 +103,7 @@ const BG := {
 	"Score: %d": "Точки: %d",
 	"New best!": "Нов рекорд!",
 	"Play again": "Играй отново",
-	"Change time": "Друго време",
+	"Change game": "Друга игра",
 	# Olive Harvest
 	"Choose a level": "Избери ниво",
 	"Count the olives": "Преброй маслините",
@@ -143,6 +149,17 @@ const BG := {
 	"Now it balances!": "Сега везните са равни!",
 	"Here are wheat and grapes, if you want to count.": "Ето жито и грозде, ако искаш да преброиш.",
 	"The harvest is ready!": "Реколтата е готова!",
+	# The Muses' Words
+	"The Muses' Words": "Думите на музите",
+	"Reading simple words": "Четене на прости думи",
+	"Read the word and find its picture, or find the word for the picture.":
+		"Прочети думата и намери картинката ѝ или намери думата за картинката.",
+	"Find the word": "Намери думата",
+	"Find the picture": "Намери картинката",
+	"Which word is it?": "Коя е думата?",
+	"Which picture is it?": "Коя е картинката?",
+	"That says \"%s\".": "Тук пише „%s“.",
+	"That is \"%s\". Read the word again!": "Това е „%s“. Прочети думата отново!",
 }
 
 const TABLES := {"bg": BG}

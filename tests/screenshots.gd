@@ -93,6 +93,21 @@ func _ready() -> void:
 	game.set("_time_left", 0.3)
 	await _wait(1.0)
 	await _shot("7_thunderbolts_results_%s" % tag)
+	# the sum games: one sum, then two sums with a wrong one showing what it makes
+	game.call("_choose_time")
+	await _wait(0.3)
+	await _shot("7_thunderbolts_games_%s" % tag)
+	for mode in [ThunderboltRules.Mode.ONE_SUM, ThunderboltRules.Mode.TWO_SUMS]:
+		game.call("_start", 60, mode)
+		await _wait(2.6)
+		await _shot("7_thunderbolts_sums%d_%s" % [mode, tag])
+	rules = game.get("_rules")
+	for c: NumberCloud in game.get("_clouds"):
+		if c.value != rules.answer():
+			c.pressed.emit()
+			break
+	await _wait(0.5)
+	await _shot("7_thunderbolts_sum_wrong_%s" % tag)
 	# Olive Harvest: the levels, filling the basket, counting together, the goat, the baskets, to 20
 	App.go("res://scenes/games/olive_harvest.tscn")
 	await _wait(0.6)
@@ -195,6 +210,24 @@ func _ready() -> void:
 	harvest.call("_next_round")
 	await _wait(1.0)
 	await _shot("9_harvest_done_%s" % tag)
+	# The Muses' Words: the games, a picture and five words, a wrong word, a word and four pictures
+	App.go("res://scenes/games/muses_words.tscn")
+	await _wait(0.6)
+	await _shot("10_words_games_%s" % tag)
+	var words := get_tree().current_scene
+	words.call("_start", 60, WordRules.Mode.FIND_WORD)
+	await _wait(0.4)
+	await _shot("10_words_find_word_%s" % tag)
+	var wrules: WordRules = words.get("_rules")
+	for c: WordCard in words.get("_cards"):
+		if c.text != wrules.answer():
+			c.pressed.emit()
+			break
+	await _wait(0.3)
+	await _shot("10_words_wrong_%s" % tag)
+	words.call("_start", 60, WordRules.Mode.FIND_PICTURE)
+	await _wait(0.4)
+	await _shot("10_words_find_picture_%s" % tag)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://screenshot_progress.cfg"))
 	get_tree().quit()
 

@@ -1,12 +1,17 @@
 class_name NumberCloud
 extends BaseButton
 ## A cloud with a number, to tap in Zeus' Thunderbolts. It floats in, bobs gently, wobbles when it is
-## the wrong one, glows when it is the hint, and bursts when Zeus's thunderbolt hits it. Its picture is
-## assets/images/greek/zeus_thunderbolts/cloud_<1..3>.png when it exists, else a drawn cloud.
+## the wrong one, glows when it is the hint, and bursts when Zeus's thunderbolt hits it. In the sum
+## games it shows a sum ("3 + 4") instead, on a bigger cloud (BIG_SIZE), and can reveal what the sum
+## makes ("= 7") under it. Its picture is assets/images/greek/zeus_thunderbolts/cloud_<1..3>.png when it
+## exists, else a drawn cloud.
 
 const SIZE := Vector2(230, 150)
+const BIG_SIZE := Vector2(300, 196)
 
 var value := 0
+var text := ""  ## what it shows: the number, or a sum that makes it
+var reveal := false  ## shows "= value" under its sum
 var glowing := false
 var _picture: Texture2D
 var _time := randf() * TAU
@@ -16,12 +21,13 @@ var _leaving := -1.0  ## seconds since it began to float away (negative: it has 
 var _arrive := 0.0  ## 0 .. 1 while it floats in
 
 
-func _init(p_value: int, variant: int) -> void:
+func _init(p_value: int, variant: int, p_text: String = "", big: bool = false) -> void:
 	value = p_value
+	text = p_text if p_text != "" else str(p_value)
 	_picture = Ui.picture("greek/zeus_thunderbolts/cloud_%d.png" % (variant % 3 + 1))
-	custom_minimum_size = SIZE
-	size = SIZE
-	pivot_offset = SIZE / 2.0
+	custom_minimum_size = BIG_SIZE if big else SIZE
+	size = custom_minimum_size
+	pivot_offset = size / 2.0
 	focus_mode = Control.FOCUS_ALL
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	add_to_group("silent")  # (the game plays its own sounds for the clouds)
@@ -47,7 +53,7 @@ func is_gone() -> bool:
 
 ## Where Zeus's thunderbolt strikes it, in its parent's coordinates.
 func target() -> Vector2:
-	return position + SIZE / 2.0
+	return position + size / 2.0
 
 
 func _process(delta: float) -> void:
@@ -70,30 +76,37 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var offset := Vector2(sin(_wobble * 40.0) * 10.0 * _wobble, sin(_time * 1.6) * 6.0 - maxf(0.0, _leaving) * 220.0)
-	var rect := Rect2(offset, SIZE)
+	var rect := Rect2(offset, size)
 	if glowing:  # the hint: a soft golden glow behind it
 		var pulse := 0.5 + 0.5 * sin(_time * 5.0)
-		draw_circle(rect.get_center(), SIZE.x * 0.55, Color(1.0, 0.97, 0.86, 0.45 + 0.2 * pulse))  # (warm white: yellow over the blue sky looks green)
-		draw_arc(rect.get_center(), SIZE.x * (0.56 + 0.04 * pulse), 0.0, TAU, 48, Color(1.0, 0.8, 0.2, 0.9), 5.0, true)
+		draw_circle(rect.get_center(), size.x * 0.55, Color(1.0, 0.97, 0.86, 0.45 + 0.2 * pulse))  # (warm white: yellow over the blue sky looks green)
+		draw_arc(rect.get_center(), size.x * (0.56 + 0.04 * pulse), 0.0, TAU, 48, Color(1.0, 0.8, 0.2, 0.9), 5.0, true)
 	if _picture != null:
 		draw_texture_rect(_picture, rect, false)
 	else:  # a puffy cloud of circles
 		var c := rect.get_center()
+		var k := size.x / SIZE.x
 		var puffs := [[Vector2(-62, 18), 44.0], [Vector2(-22, -14), 54.0], [Vector2(30, -20), 50.0],
 			[Vector2(68, 14), 42.0], [Vector2(0, 24), 50.0]]
 		for p in puffs:
-			draw_circle(c + p[0] + Vector2(0, 5), p[1], Color(0.55, 0.65, 0.8, 0.5))
+			draw_circle(c + p[0] * k + Vector2(0, 5), p[1] * k, Color(0.55, 0.65, 0.8, 0.5))
 		for p in puffs:
-			draw_circle(c + p[0], p[1], Color(0.98, 0.99, 1.0))
+			draw_circle(c + p[0] * k, p[1] * k, Color(0.98, 0.99, 1.0))
 	if _burst >= 0.0:  # sparks flying out
 		for k in 10:
 			var a := TAU * k / 10.0
 			draw_circle(rect.get_center() + Vector2(cos(a), sin(a)) * (40.0 + _burst * 260.0), 6.0 * (1.0 - _burst),
 				Color(1.0, 0.9, 0.3, 1.0 - clampf(_burst / 0.6, 0.0, 1.0)))
 	var font := get_theme_default_font()
-	var text := str(value)
-	var fs := 76
+	var fs := 76 if text.length() <= 2 else 64
 	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-	var at := rect.get_center() + Vector2(-w / 2.0, fs * 0.36)
+	var at := rect.get_center() + Vector2(-w / 2.0, fs * 0.36 - (18.0 if reveal else 0.0))
 	draw_string_outline(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 10, Color.WHITE)
 	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("1f4e8c"))
+	if reveal:  # what the sum makes, smaller, under it
+		var made := "= %d" % value
+		var ms := 44
+		var mw := font.get_string_size(made, HORIZONTAL_ALIGNMENT_LEFT, -1, ms).x
+		var mat := rect.get_center() + Vector2(-mw / 2.0, fs * 0.36 + 34.0)
+		draw_string_outline(font, mat, made, HORIZONTAL_ALIGNMENT_LEFT, -1, ms, 8, Color.WHITE)
+		draw_string(font, mat, made, HORIZONTAL_ALIGNMENT_LEFT, -1, ms, Color("b5482c"))

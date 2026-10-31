@@ -40,6 +40,9 @@
       "id": "language", "glyph": "Aa", "subject": "Language", "name": "The Grove of the Muses",
       "place": "Mount Helicon", "color": "#b060b0", "map_pos": [0.185, 0.28],
       "games": [
+        {"id": "muses_words", "title": "The Muses' Words", "skill": "Reading simple words",
+         "blurb": "Read the word and find its picture, or find the word for the picture.", "status": "ready",
+         "scene": "res://scenes/games/muses_words.tscn"},
         {"id": "muses_letters", "title": "The Muses' Letters", "skill": "Letter sounds and first letters of words",
          "blurb": "The Muses lost their letters: find the letter each picture starts with.", "status": "planned"}
       ]

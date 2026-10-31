@@ -27,6 +27,14 @@ KIND:
                      standing on the bottom edge, the top of the figure is TOP pixels below the top
                      edge and what does not fit is cut off at the bottom (for half figures cut off at
                      the bottom of their picture, whose heads must line up). Transparent PNG.
+  sheet SIZE NAMES   a sheet of many small pictures on a white background (TARGET is a folder): each
+                     picture is found by the white space around it, cut out as for "cutout" and saved
+                     as TARGET/<name>.png, SIZE x SIZE. NAMES: the names in reading order (the rows
+                     from the top, each from the left), separated by commas; "-" skips a picture, and
+                     a name ending in "+" also loses the white shut in by it (as "cutout … holes":
+                     inside a basket's handle), only for pictures with no white of their own.
+                     If the sheet does not have as many pictures as names, nothing is saved and the
+                     pictures found are listed (with their boxes) to sort out by hand.
   erase FIXES ID     paints over what a generator added that the game does not want (names written on a
                      map, its own marker discs): the boxes listed under ID in the JSON file FIXES, as
                      fractions of the picture (x0, y0, x1, y1). In a "text" box only the lettering is
@@ -90,6 +98,54 @@ def cutout_rgba(img, bottom=True, holes=False):
     colour = np.where(a > 0.02, (rgb - (1.0 - a) * 255.0) / np.maximum(a, 0.02), rgb)
     out = np.concatenate([np.clip(colour, 0, 255), a * 255.0], axis=2).astype(np.uint8)
     return Image.fromarray(out, "RGBA")
+
+
+def sheet_boxes(img):
+    """The boxes (x0, y0, x1, y1) of the separate pictures on a sheet, in reading order: what is not
+    white, grown a little so a picture's parts join, in parts bigger than a speck; rows are told apart
+    by where the pictures' middles are."""
+    rgb = np.asarray(img.convert("RGB"))
+    ink = ~(rgb > WHITE).all(axis=2)
+    reach = max(3, round(min(img.size) * 0.012))
+    joined = ndimage.binary_dilation(ink, iterations=reach)
+    labels, n = ndimage.label(joined)
+    boxes = []
+    for i, sl in enumerate(ndimage.find_objects(labels), 1):
+        part = ink[sl] & (labels[sl] == i)
+        if part.sum() < img.size[0] * img.size[1] * 0.0015:
+            continue  # a speck
+        ys, xs = np.nonzero(part)
+        boxes.append(tuple(int(v) for v in (sl[1].start + xs.min(), sl[0].start + ys.min(), sl[1].start + xs.max() + 1, sl[0].start + ys.max() + 1)))
+    if not boxes:
+        return boxes
+    heights = sorted(b[3] - b[1] for b in boxes)
+    row_gap = heights[len(heights) // 2] * 0.5
+    boxes.sort(key=lambda b: (b[1] + b[3]) / 2)
+    rows, row = [], [boxes[0]]
+    for b in boxes[1:]:
+        if (b[1] + b[3]) / 2 - (row[-1][1] + row[-1][3]) / 2 > row_gap:
+            rows.append(row)
+            row = [b]
+        else:
+            row.append(b)
+    rows.append(row)
+    return [b for r in rows for b in sorted(r, key=lambda b: b[0])]
+
+
+def sheet(img, folder, size, names):
+    boxes = sheet_boxes(img)
+    if len(boxes) != len(names):
+        print("%d pictures found, %d names: nothing saved. The pictures, in reading order:" % (len(boxes), len(names)))
+        for k, b in enumerate(boxes):
+            print("  %d  box %s  size %dx%d" % (k, b, b[2] - b[0], b[3] - b[1]))
+        sys.exit(1)
+    pad = round(min(img.size) * 0.01)
+    for b, name in zip(boxes, names):
+        if name == "-":
+            continue
+        holes = name.endswith("+")
+        part = img.crop((max(0, b[0] - pad), max(0, b[1] - pad), min(img.width, b[2] + pad), min(img.height, b[3] + pad)))
+        save(fit(cutout_rgba(part, holes=holes), size, size), "%s/%s.png" % (folder, name.rstrip("+")))
 
 
 def fit(rgba, w, h):
@@ -191,7 +247,9 @@ def main():
     src, dst = sys.argv[2], sys.argv[3]
     args = sys.argv[4:]
     img = Image.open(src)
-    if kind == "cover":
+    if kind == "sheet":
+        sheet(img, dst, int(args[0]), [n.strip() for n in args[1].split(",")])
+    elif kind == "cover":
         save(cover(img.convert("RGB"), int(args[0]), int(args[1]), float(args[2]) if len(args) > 2 else 1.0), dst)
     elif kind == "squash":
         save(img.convert("RGB").resize((int(args[0]), int(args[1])), Image.LANCZOS), dst)

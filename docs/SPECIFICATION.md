@@ -160,10 +160,23 @@ the smallest!*
   message announces it ("Now find the SMALLEST number!") before the clouds come.
 - **Growing gently** with the score: 2 clouds and numbers 1–10 to start; up to 3 clouds from 3
   points, up to 4 from 8; numbers up to 20 from 15 points. Every 10 points Zeus celebrates.
-- **Timed rounds:** the game starts with a choice of 1, 2 or 3 minutes, each showing its best score
-  ("Рекорд"). The clock is under the score; it stops while a new goal is announced, and in the last 10
-  seconds it turns orange and ticks. When the time is up the score is shown, with a fanfare, and
-  "New best!" if it beats the best for that length; then Play again or Change time.
+- **Two harder games with sums:** always two clouds, worth 1 to 10, and the child works out what is
+  in a cloud before comparing:
+  - **A sum in one cloud:** one cloud has a sum or a difference ("3 + 4", "9 − 2"), the other a
+    number;
+  - **Sums in both clouds:** both clouds have one.
+  A sum never goes past 10 nor below 1 (a + b with both at least 1; a − b from at most 10). The two
+  values are close (they differ by 1–4, by 1–2 from a score of 6), so judging by the look of the
+  numbers does not work ("7 − 6" against "7 − 3"). The sum clouds are bigger. A wrong sum cloud shows
+  what it makes under it ("= 1") and Zeus says it ("7 minus 6 makes 1. Almost! Look for the biggest
+  number."); a wrong number next to a sum makes him ask "First work out 3 plus 4!". The goal still
+  switches every 3 rounds; after two wrong taps the right cloud glows.
+- **Timed rounds:** the game starts with a choice of the game (numbers, a sum in one cloud, sums in
+  both clouds) and of 1, 2 or 3 minutes, each pair showing its best score ("Рекорд"); the numbers
+  game keeps its best scores from before the sum games. The clock is under the score; it stops
+  while a new goal is announced, and in the last 10 seconds it turns orange and ticks. When the time
+  is up the score is shown, with a fanfare, and "New best!" if it beats the best for that game and
+  length; then Play again or Change game.
 - **Score:** a laurel badge in the top right corner; it only ever goes up. The best score of each
   length is kept on the device (`user://progress.cfg`). Back returns to the area.
 - **Sounds:** a zap as Zeus throws, a sparkle as the right cloud bursts, a soft knock for a wrong one
@@ -310,6 +323,39 @@ basket carries a number puzzle, and the scale only balances when both sides are 
 - **Assets:** grove background, the nine Muses (or 3 to start), lyre, laurel branch, letter tablets
   (an alphabet in clay), picture cards for the word list (owl, apple, sun, …).
 
+### 5.4a The Muses' Words — Language, the Grove of the Muses (built)
+
+*Calliope, the Muse of words and stories, has a scroll full of words. Can you read them?*
+
+- **Skill:** reading simple words (nouns of 2–10 letters) in the language of the game: matching a
+  written word and its picture, reading the whole word rather than guessing from its first letter or
+  its length.
+- **Words:** 100 words, each with a picture: animals, food, the home, school and clothes, toys,
+  travel, nature (`data/words.json`, in Bulgarian and English; made and checked by
+  `tools/make_words.py`). Each language also has about 250 more simple words, used only as wrong
+  choices. The pictures are shared by every language and later mythology (`assets/images/words/`).
+- **Two games:**
+  1. **Find the word:** a picture, and five words to choose from. The four wrong words start with the
+     same letter as the right one and are about as long (within one letter where there are enough
+     such words, else within two): for "котка", e.g. "коте", "кифла", "кутия", "кожа".
+  2. **Find the picture:** a word, and four pictures to choose from. The wrong pictures' words start
+     with the same letter when there are such words.
+  A word does not come again within 20 rounds.
+- **Reading, not listening:** nothing is read aloud before the child answers. A wrong word is read
+  back ("That says „коте“."), a wrong picture is named ("That is „кон“. Read the word again!"), and
+  the right word is read once found. A wrong pick is dimmed and cannot be picked again; after two
+  wrong picks the right one glows. Nothing is ever taken away.
+- **Timed rounds** as in Zeus' Thunderbolts: the game and 1, 2 or 3 minutes are chosen at the start,
+  each pair with its best score; a point per word read right, the clock ticking in the last 10
+  seconds, the score and "New best!" at the end, Play again or Change game.
+- **Guide and place:** Calliope (pink dress, laurel crown, a scroll) at the lower left in three
+  moods (calm, happy, thinking), in a quiet corner of the laurel grove of the Muses. The score is on
+  Zeus' Thunderbolts' laurel badge.
+- **Built:** `scenes/games/muses_words.tscn` (`scripts/games/muses_words.gd`; the rules in
+  `word_rules.gd`, the cards in `word_card.gd`). Its pictures are part E of the prompts
+  (`assets/prompts/E_MUSES_WORDS.md`): the 100 word pictures come as 7 sheets of 16 that
+  `tools/prepare_art.py sheet` cuts apart. All of it is in the game.
+
 ### 5.5 Next: Odysseus' Voyage — Geography, the Islands of Odysseus
 
 *Odysseus is lost at sea. Give him the directions home, one step at a time.*
@@ -389,7 +435,7 @@ mythos-academy/
   assets/
     images/                 the art (see assets/prompts/IMAGE_PROMPTS.md for every file)
     prompts/                IMAGE_PROMPTS.md (the index), A_MENUS.md, B_ZEUS_THUNDERBOLTS.md, C_LATER_GAMES.md,
-                            D_DEMETER_HARVEST.md
+                            D_DEMETER_HARVEST.md, E_MUSES_WORDS.md
   tests/                    navigation test, screenshots
   docs/SPECIFICATION.md     this document
 ```
@@ -489,6 +535,11 @@ Settings and saved.
   taken away, the help, the stars), then the screen (a tablet dropped away from the scale, a wrong
   one tipping the scale and coming back dimmed, the help counting all, counting on or taking away,
   the right one, the end of a level and its stars kept).
+- `tests/words_test.tscn` (headless): The Muses' Words' words (100, each once, with enough wrong
+  choices in both languages), the rules of both games in both languages over many rounds (five words
+  with the same first letter and about the same length, four different pictures, no word again
+  soon, the hint), then the screen (a wrong word read back and dimmed, the hint, the right word, the
+  other game, the end of a round and its own best).
 - `tests/thunderbolt_test.tscn` (headless): Zeus' Thunderbolts' rules over many rounds (2–4 different
   numbers in range, the goal switching every 3 rounds, nothing taken away, the hint after two wrong
   picks), then the screen (wrong taps, the hint, a right tap, new clouds).
@@ -503,6 +554,7 @@ Settings and saved.
 2. **Art for the menus** (done): the pictures of `assets/prompts/A_MENUS.md`; markers placed on them.
 3. **Zeus' Thunderbolts** (built; its art: part B). **Olive Harvest** (built; its art: part C1).
    **Demeter's Harvest** (built; its art: part D).
+   **The Muses' Words** (Language; built; its art: part E).
 4. **Mini game frame**: the contract of §6, the guide, stars, progress saving, sound.
 5. **Temple Builder**, then **The Muses' Letters** (with voice).
 6. Android and Windows builds; testing with first graders; then Odysseus' Voyage.

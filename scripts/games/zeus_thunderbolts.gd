@@ -4,9 +4,13 @@ extends Control
 ## every other three rounds, the smallest) and Zeus strikes it with a thunderbolt. A right pick scores
 ## a point; a wrong one only makes the cloud wobble and Zeus encourage, and after two the right cloud
 ## glows. The rules are in ThunderboltRules; this is the screen.
-## A game is a timed round: the child picks 1, 2 or 3 minutes (DURATIONS), each with its own best score
-## (App.best_score); the clock stops while a new goal is announced, ticks in the last seconds, and at
-## the end the score is shown, with a fanfare for a new best. Nothing is ever taken away.
+## Three games (ThunderboltRules.Mode): plain numbers; two clouds, one with a sum (3 + 4, 9 − 2) to work
+## out; two clouds, both with sums. A wrong sum cloud shows what it makes ("= 7") and Zeus says it; a
+## wrong number next to a sum makes Zeus ask to work out the sum first.
+## A game is a timed round: the child picks the game and 1, 2 or 3 minutes (DURATIONS), each pair with
+## its own best score (App.best_score, under MODE_IDS); the clock stops while a new goal is announced,
+## ticks in the last seconds, and at the end the score is shown, with a fanfare for a new best. Nothing
+## is ever taken away.
 ## Pictures: assets/images/greek/zeus_thunderbolts/ (see assets/prompts/B_ZEUS_THUNDERBOLTS.md); each
 ## has a drawn stand-in.
 
@@ -21,6 +25,10 @@ const GAME_ID := "zeus_thunderbolts"  ## the key of its best scores
 const DURATIONS := [60, 120, 180]  ## the lengths of a round to choose from, in seconds
 const DURATION_NAMES := ["1 minute", "2 minutes", "3 minutes"]
 const HURRY := 10  ## the last seconds: the clock turns orange and ticks
+const MODE_NAMES := ["Numbers", "A sum in one cloud", "Sums in both clouds"]  ## by ThunderboltRules.Mode
+const MODE_EXAMPLES := ["7      4", "3 + 4      6", "9 − 2      2 + 5"]
+## The key of each game's best scores (the first is the plain numbers' key from before the sum games).
+const MODE_IDS := [GAME_ID, GAME_ID + "_one_sum", GAME_ID + "_two_sums"]
 
 var _rules := ThunderboltRules.new()
 var _clouds: Array[NumberCloud] = []
@@ -42,6 +50,7 @@ var _busy := false  # between a right pick and the next round
 var _sky: Texture2D
 var _overlay: Control  ## on top of everything: the thunderbolt
 var _seconds := 60  ## the length of the round being played
+var _mode: ThunderboltRules.Mode = ThunderboltRules.Mode.NUMBERS
 var _time_left := 0.0
 var _running := false  ## a round is being played (the clock runs)
 var _clock: Label
@@ -167,30 +176,36 @@ func _build_clock() -> void:
 	_clock = Ui.label(_clock_panel, "", 40)
 
 
-## Before a round: how long to play, each length with its best score.
+## Before a round: the game and how long to play, a row for each game, each length with its best score.
 func _choose_time() -> void:
 	_running = false
 	_goal_panel.visible = false
 	_clock_panel.visible = false
 	var col := _open_menu(tr("Zeus' Thunderbolts"))
-	Ui.label(col, tr("How long do you want to play?"), 30, Ui.INK.lightened(0.15))
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 24)
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	col.add_child(row)
+	Ui.label(col, tr("Choose a game and how long to play"), 28, Ui.INK.lightened(0.15))
 	var first: Button = null
-	for i in DURATIONS.size():
-		var seconds: int = DURATIONS[i]
-		var option := VBoxContainer.new()
-		option.add_theme_constant_override("separation", 6)
-		row.add_child(option)
-		var b := Ui.button(option, tr(DURATION_NAMES[i]), _start.bind(seconds), 34)
-		b.custom_minimum_size = Vector2(230, 110)
-		b.set_meta("sound", "start")
-		var best := App.best_score(GAME_ID, seconds)
-		Ui.label(option, tr("Best: %d") % best if best > 0 else " ", 26)
-		if first == null:
-			first = b
+	for m in MODE_NAMES.size():
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 16)
+		col.add_child(row)
+		var about := VBoxContainer.new()
+		about.custom_minimum_size.x = 300
+		about.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_child(about)
+		Ui.label(about, tr(MODE_NAMES[m]), 28, Ui.INK, 300.0)
+		Ui.label(about, MODE_EXAMPLES[m], 26, Color("1f4e8c"))
+		for i in DURATIONS.size():
+			var seconds: int = DURATIONS[i]
+			var option := VBoxContainer.new()
+			option.add_theme_constant_override("separation", 2)
+			row.add_child(option)
+			var b := Ui.button(option, tr(DURATION_NAMES[i]), _start.bind(seconds, m), 26)
+			b.custom_minimum_size = Vector2(190, 76)
+			b.set_meta("sound", "start")
+			var best := App.best_score(MODE_IDS[m], seconds)
+			Ui.label(option, tr("Best: %d") % best if best > 0 else " ", 22)
+			if first == null:
+				first = b
 	first.call_deferred("grab_focus")
 
 
@@ -204,8 +219,8 @@ func _finish() -> void:
 	_bubble.visible = false
 	_announce.visible = false
 	var score := _rules.score
-	var previous := App.best_score(GAME_ID, _seconds)
-	var new_best := App.record_score(GAME_ID, _seconds, score)
+	var previous := App.best_score(MODE_IDS[_mode], _seconds)
+	var new_best := App.record_score(MODE_IDS[_mode], _seconds, score)
 	_set_pose("happy")
 	Sound.play("fanfare")
 	var col := _open_menu(tr("Time's up!"))
@@ -220,9 +235,9 @@ func _finish() -> void:
 	row.add_theme_constant_override("separation", 20)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	col.add_child(row)
-	var again := Ui.button(row, tr("Play again"), _start.bind(_seconds), 32)
+	var again := Ui.button(row, tr("Play again"), _start.bind(_seconds, _mode), 32)
 	again.set_meta("sound", "start")
-	Ui.button(row, tr("Change time"), _choose_time, 32)
+	Ui.button(row, tr("Change game"), _choose_time, 32)
 	again.call_deferred("grab_focus")
 
 
@@ -244,14 +259,15 @@ func _open_menu(title: String) -> VBoxContainer:
 	return col
 
 
-## A round of `seconds` starts.
-func _start(seconds: int) -> void:
+## A round of `seconds` of game `mode` starts.
+func _start(seconds: int, mode: ThunderboltRules.Mode = ThunderboltRules.Mode.NUMBERS) -> void:
 	if _menu != null:
 		_menu.queue_free()
 		_menu = null
 	_seconds = seconds
+	_mode = mode
 	_time_left = seconds
-	_rules = ThunderboltRules.new()
+	_rules = ThunderboltRules.new(null, mode)
 	_score_label.text = "0"
 	_goal_panel.visible = true
 	_clock_panel.visible = true
@@ -280,6 +296,8 @@ func _next_round(first: bool = false) -> void:
 		var words := "Find the BIGGEST number!" if _rules.goal == ThunderboltRules.Goal.BIGGEST else "Now find the SMALLEST number!"
 		if first:
 			words = "Zeus needs your help! Find the BIGGEST number!"
+			if _mode != ThunderboltRules.Mode.NUMBERS:
+				words = "Work out the clouds! Find the BIGGEST number!"
 		words = tr(words)
 		_announce_label.text = words
 		_announce.visible = true
@@ -309,8 +327,9 @@ func _spawn(numbers: Array[int]) -> void:
 	for c in _clouds:
 		c.queue_free()
 	_clouds.clear()
+	var sums := _mode != ThunderboltRules.Mode.NUMBERS
 	for i in numbers.size():
-		var cloud := NumberCloud.new(numbers[i], i + _rules.round_index)
+		var cloud := NumberCloud.new(numbers[i], i + _rules.round_index, _rules.label(i), sums)
 		cloud.pressed.connect(_on_pick.bind(cloud))
 		_cloud_layer.add_child(cloud)
 		_clouds.append(cloud)
@@ -333,7 +352,7 @@ func _layout() -> void:
 			cell = Vector2((i % 2 + 0.5) / 2.0, (i / 2 + 0.5) / 2.0)
 		else:
 			cell = Vector2((i + 0.5) / n, 0.35 + (0.3 if i % 2 == 1 else 0.0))
-		_clouds[i].position = area.position + cell * area.size - NumberCloud.SIZE / 2.0
+		_clouds[i].position = area.position + cell * area.size - _clouds[i].size / 2.0
 
 
 func _on_pick(cloud: NumberCloud) -> void:
@@ -364,10 +383,23 @@ func _on_pick(cloud: NumberCloud) -> void:
 		cloud.wobble()
 		get_tree().create_timer(BOLT_TIME * 0.8).timeout.connect(Sound.play.bind("oops"))
 		var biggest := _rules.goal == ThunderboltRules.Goal.BIGGEST
-		_say(tr("Almost! Look for the biggest number." if biggest else "Almost! Look for the smallest number."), "encourage")
+		var words := tr("Almost! Look for the biggest number." if biggest else "Almost! Look for the smallest number.")
+		var i := _clouds.find(cloud)
+		if _rules.sums[i] != ThunderboltRules.PLAIN:  # a sum: what it makes, shown and said
+			cloud.reveal = true
+			words = "%s %s" % [tr("%s makes %d.") % [_spoken_sum(i), cloud.value], words]
+		elif _clouds.size() == 2 and _rules.sums[1 - i] != ThunderboltRules.PLAIN and not _clouds[1 - i].reveal:
+			words = tr("First work out %s!") % _spoken_sum(1 - i)  # (a number next to a sum)
+		_say(words, "encourage")
 		if _rules.hint_due():
 			for c in _clouds:
 				c.glowing = c.value == _rules.answer()
+
+
+## Cloud `i`'s sum in words, to say: "3 plus 4".
+func _spoken_sum(i: int) -> String:
+	var s: Vector2i = _rules.sums[i]
+	return "%d %s %d" % [s.x, tr("plus") if s.y > 0 else tr("minus"), absi(s.y)]
 
 
 ## Zeus says something (already translated: shown in his bubble, read aloud) and shows how he feels.
