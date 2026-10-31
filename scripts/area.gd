@@ -40,7 +40,7 @@ func _ready() -> void:
 	flow.alignment = FlowContainer.ALIGNMENT_CENTER
 	center.add_child(flow)
 	# As wide as the screen allows, so the cards sit side by side and wrap only when there is no room.
-	var fit_width := func() -> void: flow.custom_minimum_size.x = maxf(380.0, size.x - 80.0)
+	var fit_width := func() -> void: flow.custom_minimum_size.x = maxf(380.0, size.x - 48.0)
 	resized.connect(fit_width)
 	fit_width.call_deferred()
 	var first: Button = null

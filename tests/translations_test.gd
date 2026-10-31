@@ -72,8 +72,12 @@ func _texts() -> Array[String]:
 	var zeus: GDScript = load("res://scripts/games/zeus_thunderbolts.gd")
 	for line: String in zeus.get_script_constant_map()["PRAISE"]:
 		_add(out, line)
-	var olives: GDScript = load("res://scripts/games/olive_harvest.gd")
-	for line: String in olives.get_script_constant_map()["LEVEL_NAMES"]:
+	for game in ["olive_harvest", "demeter_harvest"]:
+		var script: GDScript = load("res://scripts/games/%s.gd" % game)
+		for line: String in script.get_script_constant_map()["LEVEL_NAMES"]:
+			_add(out, line)
+	var harvest: GDScript = load("res://scripts/games/demeter_harvest.gd")
+	for line: String in harvest.get_script_constant_map()["PRAISE"]:
 		_add(out, line)
 	var area: GDScript = load("res://scripts/area.gd")
 	for line: String in (area.get_script_constant_map()["STATUS"] as Dictionary).values():

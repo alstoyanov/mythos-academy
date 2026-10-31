@@ -146,6 +146,55 @@ func _ready() -> void:
 	olives.call("_check", orules.target, olives.get("_basket"))
 	await _wait(2.4)
 	await _shot("8_olives_done_%s" % tag)
+	# Demeter's Harvest: the levels, a problem, a tablet carried, a wrong one, Demeter's help, solved, each level
+	App.go("res://scenes/games/demeter_harvest.tscn")
+	await _wait(0.6)
+	await _shot("9_harvest_levels_%s" % tag)
+	var harvest := get_tree().current_scene
+	harvest.call("_start", 0)
+	await _wait(0.8)
+	await _shot("9_harvest_problem_%s" % tag)
+	var hrules: HarvestRules = harvest.get("_rules")
+	var htablets: Array = (harvest.get("_tablets") as Array).filter(func(t: DragTablet) -> bool: return t.value != hrules.answer)
+	var carried: DragTablet = htablets[0]
+	carried.dragging = true
+	carried.z_index = 10
+	carried.position = (harvest.get("_scale") as HarvestScale).slot_rect().get_center() + Vector2(-80, -60)
+	await _shot("9_harvest_carry_%s" % tag)
+	carried.dragging = false
+	carried.z_index = 0
+	harvest.call("_send", carried)
+	await _wait(1.6)
+	await _shot("9_harvest_wrong_%s" % tag)
+	await _wait(2.3)
+	await _shot("9_harvest_count_alone_%s" % tag)
+	harvest.call("_send", htablets[1])
+	await _wait(3.9 + 1.6 + hrules.answer * 0.4)
+	await _shot("9_harvest_help_%s" % tag)
+	await _wait(hrules.answer * 0.3 + 1.0)
+	await _shot("9_harvest_help_done_%s" % tag)
+	for t: DragTablet in harvest.get("_tablets"):
+		if t.value == hrules.answer:
+			harvest.call("_send", t)
+	await _wait(1.7)
+	await _shot("9_harvest_solved_%s" % tag)
+	for level in [1, 2, 3, 4]:
+		harvest.call("_start", level)
+		await _wait(0.8)
+		await _shot("9_harvest_level%d_%s" % [level + 1, tag])
+	harvest.call("_start", 2)  # the missing number, with Demeter's help
+	await _wait(0.5)
+	hrules = harvest.get("_rules")
+	htablets = (harvest.get("_tablets") as Array).filter(func(t: DragTablet) -> bool: return t.value != hrules.answer)
+	harvest.call("_send", htablets[0])
+	await _wait(3.9)
+	harvest.call("_send", htablets[1])
+	await _wait(3.9 + 1.6 + (hrules.answer + 1) * 0.7 + 0.3)
+	await _shot("9_harvest_help_missing_%s" % tag)
+	hrules.round_index = HarvestRules.ROUNDS
+	harvest.call("_next_round")
+	await _wait(1.0)
+	await _shot("9_harvest_done_%s" % tag)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://screenshot_progress.cfg"))
 	get_tree().quit()
 

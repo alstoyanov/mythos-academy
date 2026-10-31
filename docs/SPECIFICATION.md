@@ -1,7 +1,7 @@
 # Mythos Academy — Specification
 
-Version 0.2 · 2026-10-29 · Status: the menus (mythology and area selection) and the first mini game, Zeus'
-Thunderbolts (arithmetic), are built; the other mini games are proposals.
+Version 0.3 · 2026-10-31 · Status: the menus (mythology and area selection) and the three arithmetic mini
+games (Zeus' Thunderbolts, Olive Harvest, Demeter's Harvest) are built; the other mini games are proposals.
 
 ## 1. Vision
 
@@ -135,8 +135,8 @@ profiles, progress, and the language.
 
 ## 5. Grade 1 mini games
 
-The first arithmetic game, Zeus' Thunderbolts, is built (§5.1). The others are proposals: three
-more mini games, then one for geography. They will share one frame (§6): a few levels, a spoken
+The three arithmetic games are built (§5.1, §5.2, §5.2a). The others are proposals: two more mini
+games, then one for geography. They will share one frame (§6): a few levels, a spoken
 instruction, no timer, a hint after a mistake, up to 3 laurel stars per level.
 
 The skills follow the usual Grade 1 goals (e.g. the Common Core and most European curricula):
@@ -206,6 +206,67 @@ olives he asks for.*
   `olive_rules.gd`, the basket in `olive_basket.gd`, the tablets in `number_tablet.gd`). Its pictures
   (`assets/images/greek/olive_harvest/`) are part C1 of the prompts; the three merchant moods are cut
   so that his head is in the same place in each (`tools/prepare_art.py figure … TOP`).
+
+### 5.2a Demeter's Harvest — Arithmetic, the Agora of Numbers (built)
+
+*Demeter, the goddess of the harvest, weighs the harvest for the festival on her great scale. Each
+basket carries a number puzzle, and the scale only balances when both sides are equal.*
+
+- **Skill:** adding and taking away within 10, then within 20; the missing number (5 + ? = 8,
+  8 − ? = 5); the meaning of the equal sign (both sides the same: 4 + 3 = 5 + ?). (Common Core
+  1.OA.1, 1.OA.6, 1.OA.7, 1.OA.8.)
+- **Guide and place:** Demeter (a warm, motherly goddess with a crown of wheat and poppies, a pastel
+  tunic) on a sunny farm with olive trees and green hills. She stands at the lower left, in three
+  moods: calm, happy, and gently shaking her head.
+- **Play:** a big balance scale stands in the middle. Each basket carries one side of an equation on
+  clay tablets on its front (left "3 + 4", right "?"); the whole problem is also shown big along the
+  top ("3 + 4 = ?") and read aloud ("3 plus 4 equals how many?"; at a level's start first "Which
+  number balances the scale?"). Four number tablets lie in the field below; the child drags the one
+  that balances the scale onto the "?" (or taps it; Enter on a focused one, for the keyboard). One
+  dropped anywhere else slides back. The empty "?" weighs nothing, so before an answer the scale
+  leans towards the side with the numbers.
+- **No counting your way out:** the problem shows only numbers. The choices are the answer, the
+  mistakes first graders make most (adding instead of taking away: 12 for 9 − 3; the other side's
+  number: 8 for 5 + ? = 8, 7 for 4 + 3 = 5 + ?; all the numbers added: 13 for 5 + ? = 8) and numbers
+  close to it.
+- **Weighing:** the tablet goes into the "?" and the scale swings with it. Right: level, glowing,
+  sparkles and confetti, the "?" along the top filled in and the equation read ("Well done! 3 plus 4
+  equals 7!"), a goat bounds across, a harvest basket flies to the counter ("3 / 8"). Wrong: the
+  scale tips clearly, Demeter gently shakes her head and says "8 is too big. Try a smaller number."
+  (or "too small … bigger"); the tablet goes back, dimmed, and cannot be chosen again in this
+  problem.
+- **After one wrong answer:** wheat and grapes appear in the baskets, one for each unit (wheat for the
+  first number, grapes for the added one, the last ones faded for those taken away; nothing yet for
+  the missing number), and Demeter says "Here are wheat and grapes, if you want to count." The child
+  can count them alone; nothing is counted for them and no answer glows.
+- **Help after two wrong answers:** Demeter counts the wheat and grapes with the child, each item
+  marked with its number and read aloud:
+  - the result missing (3 + 4 = ?, 9 − 3 = ?): she counts the other side: "That makes 7." /
+    "6 are left.";
+  - a part to add (5 + ? = 8, 4 + 3 = 5 + ?): she starts from this side's number and counts on,
+    adding a ghost bunch of grapes for each, until the scale is level: "We need 3 more.";
+  - a part to take away (8 − ? = 5): she fades one item at a time until the scale is level:
+    "We take away 3.".
+  Then the right tablet glows. Nothing is ever taken away from the child.
+- **Levels** (chosen at the start; all open, each with its best stars). A level is 8 problems; the
+  first four use smaller numbers:
+  1. **Adding:** a + b = ?, sums 3–7, then 5–10.
+  2. **Taking away:** a − b = ?, from 4–7, then from 6–10.
+  3. **The missing number:** a + ? = c or a − ? = c, within 10.
+  4. **Up to 20:** a + b = ? and a − b = ? past ten (8 + 5, 15 − 7), up to 15, then up to 20.
+  5. **Both sides equal:** a + b = c + ? (or c + ? = a + b), sums 5–8, then 6–10.
+- **Stars:** for the problems right at the first try (7 or more: 3 stars, 4 or more: 2, else 1 —
+  never none), a fanfare and "The harvest is ready!", "New best!", and Play again / Next level /
+  Choose a level.
+- **Sounds:** a tablet landing in the scale, a soft knock for a wrong answer, a tick per item counted
+  together, a munch for one taken away, the sparkle burst and a chime, a fanfare (the sounds of §9.4a,
+  no new ones).
+- **Built:** `scenes/games/demeter_harvest.tscn` (`scripts/games/demeter_harvest.gd`; the problems in
+  `harvest_rules.gd`, the scale in `harvest_scale.gd`, the answer tablets in `drag_tablet.gd`, the
+  wheat and grapes in `harvest_item.gd`; the tablets are drawn with Olive Harvest's picture). Its
+  pictures (`assets/images/greek/demeter_harvest/`) are part D of the prompts
+  (`assets/prompts/D_DEMETER_HARVEST.md`); until they exist, all of it is drawn. The scale is three
+  pictures put together by the game (the stand, the beam that tips, the basket hanging from each end).
 
 ### 5.3 Temple Builder — Geometry, the Temple Builders of Olympia
 
@@ -327,7 +388,8 @@ mythos-academy/
   scenes/                   one scene per screen
   assets/
     images/                 the art (see assets/prompts/IMAGE_PROMPTS.md for every file)
-    prompts/                IMAGE_PROMPTS.md (the index), A_MENUS.md, B_ZEUS_THUNDERBOLTS.md, C_LATER_GAMES.md
+    prompts/                IMAGE_PROMPTS.md (the index), A_MENUS.md, B_ZEUS_THUNDERBOLTS.md, C_LATER_GAMES.md,
+                            D_DEMETER_HARVEST.md
   tests/                    navigation test, screenshots
   docs/SPECIFICATION.md     this document
 ```
@@ -422,6 +484,11 @@ Settings and saved.
   ranges, three different choices with the answer among them, a coin per order, nothing taken away,
   the stars, the hint), then the screen (filling the basket, taking one out, a wrong Done and counting
   together, the goat and the tablets, the baskets, the end of a level and its stars kept).
+- `tests/harvest_test.tscn` (headless): Demeter's Harvest's problems on every level over many rounds
+  (the equations in range, one answer that balances, four choices with the likely mistakes, nothing
+  taken away, the help, the stars), then the screen (a tablet dropped away from the scale, a wrong
+  one tipping the scale and coming back dimmed, the help counting all, counting on or taking away,
+  the right one, the end of a level and its stars kept).
 - `tests/thunderbolt_test.tscn` (headless): Zeus' Thunderbolts' rules over many rounds (2–4 different
   numbers in range, the goal switching every 3 rounds, nothing taken away, the hint after two wrong
   picks), then the screen (wrong taps, the hint, a right tap, new clouds).
@@ -435,6 +502,7 @@ Settings and saved.
    and mobile layout.
 2. **Art for the menus** (done): the pictures of `assets/prompts/A_MENUS.md`; markers placed on them.
 3. **Zeus' Thunderbolts** (built; its art: part B). **Olive Harvest** (built; its art: part C1).
+   **Demeter's Harvest** (built; its art: part D).
 4. **Mini game frame**: the contract of §6, the guide, stars, progress saving, sound.
 5. **Temple Builder**, then **The Muses' Letters** (with voice).
 6. Android and Windows builds; testing with first graders; then Odysseus' Voyage.

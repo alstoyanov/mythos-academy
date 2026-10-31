@@ -10,9 +10,11 @@ KIND:
                      pictures already close to that shape).
   medallion N        a round emblem on a white background: the circle cut out with a clean round edge,
                      N x N, transparent PNG.
-  cutout W H         a character or object on a white background: the white around it made transparent
+  cutout W H [holes] a character or object on a white background: the white around it made transparent
                      (only white reached from the edges, so white inside the picture stays), cropped,
-                     centred in W x H with a small margin, transparent PNG.
+                     centred in W x H with a small margin, transparent PNG. With "holes", white shut in
+                     by the picture goes too (between the cords of a hanging basket, inside a ring):
+                     only for pictures that have no white of their own.
   figure W H SCALE CX [CROP_Y|-] [FADE|-] [TOP]
                      a character on a white background, for a set of poses that must match: cut out as
                      for "cutout" (but the white is only followed in from the top and the sides, so a
@@ -61,19 +63,21 @@ def cover(img, w, h, zoom=1.0):
     return img.crop((round(x0), round(y0), round(x0 + cw), round(y0 + ch))).resize((w, h), Image.LANCZOS)
 
 
-def background_mask(rgb, bottom=True):
+def background_mask(rgb, bottom=True, holes=False):
     """True where the picture is the white background joined to its edges (the bottom edge only if
-    `bottom`)."""
+    `bottom`); with `holes`, all of the white."""
     white = (rgb > WHITE).all(axis=2)
+    if holes:
+        return white
     labels, _ = ndimage.label(white)
     edges = [labels[0], labels[:, 0], labels[:, -1]] + ([labels[-1]] if bottom else [])
     edge = np.unique(np.concatenate(edges))
     return np.isin(labels, edge[edge > 0])
 
 
-def cutout_rgba(img, bottom=True):
+def cutout_rgba(img, bottom=True, holes=False):
     rgb = np.asarray(img.convert("RGB")).astype(np.float32)
-    bg = background_mask(rgb.astype(np.uint8), bottom)
+    bg = background_mask(rgb.astype(np.uint8), bottom, holes)
     # Soft edge: near the background, the brighter a pixel the more see-through, and its colour
     # with the white taken out, so no light fringe remains.
     near = ndimage.binary_dilation(bg, iterations=2) & ~bg
@@ -199,7 +203,8 @@ def main():
         top = float(args[6]) if len(args) > 6 else None
         save(figure(img, int(args[0]), int(args[1]), float(args[2]), float(args[3]), crop, fade, top), dst)
     elif kind == "cutout":
-        save(fit(cutout_rgba(img), int(args[0]), int(args[1])), dst)
+        holes = len(args) > 2 and args[2] == "holes"
+        save(fit(cutout_rgba(img, holes=holes), int(args[0]), int(args[1])), dst)
     else:
         sys.exit("unknown kind " + kind)
 

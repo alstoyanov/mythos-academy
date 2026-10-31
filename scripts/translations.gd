@@ -122,6 +122,27 @@ const BG := {
 	"%d are left.": "Останаха %d.",
 	"All the baskets are full!": "Всички кошници са пълни!",
 	"Next level": "Следващо ниво",
+	# Demeter's Harvest
+	"Demeter's Harvest": "Реколтата на Деметра",
+	"Adding and taking away within 20; the equal sign": "Събиране и изваждане до 20; знакът „равно“",
+	"Find the number that balances Demeter's harvest scale.":
+		"Намери числото, което уравновесява везните на Деметра.",
+	"Adding": "Събиране",
+	"Taking away": "Изваждане",
+	"The missing number": "Липсващото число",
+	"Both sides equal": "Равни страни",
+	"Which number balances the scale?": "Кое число ще уравновеси везните?",
+	"plus": "плюс",
+	"minus": "минус",
+	"equals": "е равно на",
+	"how many": "колко",
+	"%d is too big. Try a smaller number.": "%d е твърде голямо. Опитай с по-малко число.",
+	"%d is too small. Try a bigger number.": "%d е твърде малко. Опитай с по-голямо число.",
+	"We need %d more.": "Трябват ни още %d.",
+	"We take away %d.": "Махаме %d.",
+	"Now it balances!": "Сега везните са равни!",
+	"Here are wheat and grapes, if you want to count.": "Ето жито и грозде, ако искаш да преброиш.",
+	"The harvest is ready!": "Реколтата е готова!",
 }
 
 const TABLES := {"bg": BG}

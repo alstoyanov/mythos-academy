@@ -14,7 +14,10 @@
          "scene": "res://scenes/games/zeus_thunderbolts.tscn"},
         {"id": "olive_harvest", "title": "Olive Harvest", "skill": "Counting, adding and taking away within 20",
          "blurb": "Fill Athena's baskets with exactly the right number of olives.", "status": "ready",
-         "scene": "res://scenes/games/olive_harvest.tscn"}
+         "scene": "res://scenes/games/olive_harvest.tscn"},
+        {"id": "demeter_harvest", "title": "Demeter's Harvest", "skill": "Adding and taking away within 20; the equal sign",
+         "blurb": "Find the number that balances Demeter's harvest scale.", "status": "ready",
+         "scene": "res://scenes/games/demeter_harvest.tscn"}
       ]
     },
     {
