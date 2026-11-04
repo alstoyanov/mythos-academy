@@ -287,7 +287,7 @@ func _next_order() -> void:
 			_busy = true
 			_goat_eats(r.b)
 	_layout()
-	App.say(_order_label.text)
+	App.say(_order_label.text, true)
 	Sound.play("whoosh")
 
 
@@ -539,7 +539,7 @@ func _goat_eats(k: int) -> void:
 	tw.tween_interval(0.5)
 	tw.tween_callback(func() -> void:
 		_order_label.text = tr("The goat ate %d. How many are left?") % k
-		App.say(_order_label.text)
+		App.say(_order_label.text, true)
 		_add_tablets()
 		_layout()
 		_busy = false)
@@ -551,7 +551,7 @@ func _say(words: String) -> void:
 	_bubble_label.text = words
 	_bubble.visible = true
 	_bubble.modulate.a = 1.0
-	App.say(words)
+	App.say(words, true)
 	_bubble_tween = _bubble.create_tween()
 	_bubble_tween.tween_interval(2.4)
 	_bubble_tween.tween_property(_bubble, "modulate:a", 0.0, 0.4)

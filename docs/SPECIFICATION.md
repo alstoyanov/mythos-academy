@@ -557,6 +557,11 @@ Settings and saved.
   (`logo_bg.png`); without the language's logo the title screen writes the name in the language.
 - Read aloud speaks with a voice of the chosen language only; a device without a Bulgarian voice stays
   silent in Bulgarian rather than reading it with an English voice. (Recorded voices later.)
+- What is read aloud has its numbers and the signs + − = in words (`scripts/spoken.gd`, used only by
+  `App.say`), because a voice can read digits and signs badly: "1 + 3 = 4" is read "едно плюс три е равно
+  на четири". What is shown keeps its digits and signs. In Olive Harvest's sentences 1 is "една" (of an
+  olive); counting aloud is "едно, две, три". `tests/spoken_test.tscn` fails if any text would be read
+  with a digit or a sign left in it.
 - Bulgarian wording: grades as "1 клас"; "най‑голямото" and "най‑малкото" are written with a
   non-breaking hyphen so they never break across lines.
 - Language mini games need their own content per language (see §5.4).

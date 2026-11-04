@@ -134,8 +134,9 @@ func _load_settings() -> void:
 ## Reads `text` (already in the game's language) aloud with the device's text to speech (Windows,
 ## Android, ...), if "Read aloud" is on and the device has a voice for the language (never another
 ## language's voice: it would mangle the words); a new line stops the one being read. (Recorded voices
-## come later.)
-func say(text: String) -> void:
+## come later.) Its numbers and signs are read as words (Spoken); `feminine` is for sentences about
+## something feminine in Bulgarian, where 1 is "една" rather than "едно".
+func say(text: String, feminine: bool = false) -> void:
 	if not voice_on or DisplayServer.get_name() == "headless":
 		return
 	if not ProjectSettings.get_setting("audio/general/text_to_speech", false):
@@ -146,7 +147,7 @@ func say(text: String) -> void:
 			return
 		_voice = voices[0]
 	DisplayServer.tts_stop()
-	DisplayServer.tts_speak(text, _voice)
+	DisplayServer.tts_speak(Spoken.text(text, language, feminine), _voice)
 
 
 var _voice := ""
