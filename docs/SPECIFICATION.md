@@ -281,6 +281,47 @@ basket carries a number puzzle, and the scale only balances when both sides are 
   (`assets/prompts/D_DEMETER_HARVEST.md`); until they exist, all of it is drawn. The scale is three
   pictures put together by the game (the stand, the beam that tips, the basket hanging from each end).
 
+### 5.2b Aeolus' Balloons — Arithmetic, the Agora of Numbers (built)
+
+Putting numbers in order: a bubble sort, played. A row of balloons with different numbers from 1 to 9
+(and sizes to match: the bigger the number, the bigger the balloon) hangs on Aeolus' rope. The child
+swaps two neighbouring balloons at a time until they are in order. Scripts: `scripts/games/balloon_rules.gd`
+(rules), `balloon.gd` (a drawn balloon), `aeolus_balloons.gd` (the screen). No pictures are needed.
+
+- **Levels** (all open, each with its best stars): 1 five balloons, smallest to biggest; 2 eight
+  balloons, smallest to biggest; 3 eight balloons, biggest to smallest. One puzzle per level; Play
+  again gives a new row.
+- **Playing:** tap a balloon, then the one next to it (they swap, sliding past each other), or swipe a
+  balloon sideways. Tapping one that is not a neighbour moves the selection. Any swap is allowed.
+- **Undo** takes back swaps one at a time; **Hint** makes a pair in the wrong order glow ("These two are
+  in the wrong order. Swap them!"); **Restart** puts the same row back. A counter shows the swaps.
+- **Stars:** the fewest swaps possible is the number of wrong pairs at the start (each swap of a wrong
+  neighbouring pair fixes exactly one). 3 stars for at most 2 swaps over that, 2 for at most twice
+  that, else 1. Undone swaps still count. Nothing is taken away; no timer.
+- **Test:** `tests/balloon_test.tscn`.
+
+### 5.2c Hercules' Leaps — Arithmetic, the Agora of Numbers (built)
+
+Finding the sign and the number that turn one number into another. Hercules stands on a cliff with a
+number; across a chasm is a cliff with another. Scripts: `scripts/games/leap_rules.gd` (rules),
+`leap_stone.gd` (a cliff), `leap_hero.gd` (Hercules), `hercules_leaps.gd` (the screen). Pictures:
+`assets/prompts/G_HERCULES_LEAPS.md`; each has a drawn stand-in.
+
+- **The question:** the sum along the top, "1  ?  ?  =  5". Along the bottom are + and − and all the
+  one digit numbers, 0 to 9, on clay tablets. The child chooses a sign and a number, in either order.
+- **Right:** he leaps on an arc and lands; the counter moves ("3 / 10"); the view moves on, so that he
+  is back on the left with the next cliff across the next chasm. The number he stands on starts the next
+  sum (1 + 4 = 5, then 5 − 2 = 3).
+- **Wrong:** he never falls. He stays on his cliff, thinking, and the tablet wobbles. A wrong sign:
+  "5 is bigger than 1, so we add." (so a child never has to work out a sum that falls below zero). A
+  wrong number: "1 + 3 = 4. We need 5." After two wrong answers in a leap the right sign and number glow.
+- **Levels** (all open, each with its best stars), ten leaps each, starting from the lowest number:
+  1 up to 5; 2 up to 10; 3 from 10 to 20 (not crossing ten); 4 up to 20 (leaps of at most 9, often
+  crossing ten). He is never sent straight back to the cliff he has just come from.
+- **Stars:** 3 for 8 or more leaps right at the first try, 2 for 5 or more, else 1. No timer; nothing is
+  taken away.
+- **Test:** `tests/leaps_test.tscn`.
+
 ### 5.3 Temple Builder — Geometry, the Temple Builders of Olympia
 
 *The builders of Olympia are raising a temple for Zeus. Find the stone that fits each gap.*

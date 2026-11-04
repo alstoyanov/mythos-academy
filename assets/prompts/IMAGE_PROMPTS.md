@@ -1,6 +1,6 @@
 # Mythos Academy — image prompts
 
-One complete prompt for every picture of the game, ready to copy: nothing needs to be filled in. The prompts are in five files:
+One complete prompt for every picture of the game, ready to copy: nothing needs to be filled in. The prompts are in seven files:
 
 | Part | File | Pictures | State |
 |---|---|---|---|
@@ -9,6 +9,8 @@ One complete prompt for every picture of the game, ready to copy: nothing needs 
 | C — the later Grade 1 mini games | [C_LATER_GAMES.md](C_LATER_GAMES.md) | 82 | C1 (Olive Harvest) done: in the game; the rest for later |
 | D — Demeter's Harvest (Arithmetic) | [D_DEMETER_HARVEST.md](D_DEMETER_HARVEST.md) | 13 | done: in the game |
 | E — The Muses' Words (Language) | [E_MUSES_WORDS.md](E_MUSES_WORDS.md) | 12 prompts: 100 word pictures on 7 sheets, and 5 more | done: in the game |
+| F — Aeolus' Balloons (Arithmetic) | [F_AEOLUS_BALLOONS.md](F_AEOLUS_BALLOONS.md) | 2 (both optional: the balloons are drawn by the game) | done: in the game |
+| G — Hercules' Leaps (Arithmetic) | [G_HERCULES_LEAPS.md](G_HERCULES_LEAPS.md) | 7 | done: in the game |
 
 How to use them:
 

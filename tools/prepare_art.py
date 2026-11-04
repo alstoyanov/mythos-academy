@@ -15,7 +15,7 @@ KIND:
                      centred in W x H with a small margin, transparent PNG. With "holes", white shut in
                      by the picture goes too (between the cords of a hanging basket, inside a ring):
                      only for pictures that have no white of their own.
-  figure W H SCALE CX [CROP_Y|-] [FADE|-] [TOP]
+  figure W H SCALE CX [CROP_Y|-] [FADE|-] [TOP|-] [GAPS]
                      a character on a white background, for a set of poses that must match: cut out as
                      for "cutout" (but the white is only followed in from the top and the sides, so a
                      figure that runs into the bottom edge keeps its white clothes), optionally cut off
@@ -26,7 +26,9 @@ KIND:
                      that is not quite white (e.g. around a thunderbolt in a hand). TOP: instead of
                      standing on the bottom edge, the top of the figure is TOP pixels below the top
                      edge and what does not fit is cut off at the bottom (for half figures cut off at
-                     the bottom of their picture, whose heads must line up). Transparent PNG.
+                     the bottom of their picture, whose heads must line up). GAPS "x,y;x,y" (source
+                     pixels): white shut in by the figure that goes too, a point on each (between an
+                     arm and the body; the whites of the eyes and the teeth stay). Transparent PNG.
   sheet SIZE NAMES   a sheet of many small pictures on a white background (TARGET is a folder): each
                      picture is found by the white space around it, cut out as for "cutout" and saved
                      as TARGET/<name>.png, SIZE x SIZE. NAMES: the names in reading order (the rows
@@ -71,21 +73,21 @@ def cover(img, w, h, zoom=1.0):
     return img.crop((round(x0), round(y0), round(x0 + cw), round(y0 + ch))).resize((w, h), Image.LANCZOS)
 
 
-def background_mask(rgb, bottom=True, holes=False):
+def background_mask(rgb, bottom=True, holes=False, gaps=()):
     """True where the picture is the white background joined to its edges (the bottom edge only if
-    `bottom`); with `holes`, all of the white."""
+    `bottom`), and the white around each of the points `gaps`; with `holes`, all of the white."""
     white = (rgb > WHITE).all(axis=2)
     if holes:
         return white
     labels, _ = ndimage.label(white)
     edges = [labels[0], labels[:, 0], labels[:, -1]] + ([labels[-1]] if bottom else [])
-    edge = np.unique(np.concatenate(edges))
+    edge = np.unique(np.concatenate(edges + [np.array([labels[y, x] for x, y in gaps], dtype=labels.dtype)]))
     return np.isin(labels, edge[edge > 0])
 
 
-def cutout_rgba(img, bottom=True, holes=False):
+def cutout_rgba(img, bottom=True, holes=False, gaps=()):
     rgb = np.asarray(img.convert("RGB")).astype(np.float32)
-    bg = background_mask(rgb.astype(np.uint8), bottom, holes)
+    bg = background_mask(rgb.astype(np.uint8), bottom, holes, gaps)
     # Soft edge: near the background, the brighter a pixel the more see-through, and its colour
     # with the white taken out, so no light fringe remains.
     near = ndimage.binary_dilation(bg, iterations=2) & ~bg
@@ -169,10 +171,10 @@ def fade_pale(rgba, box):
     return Image.fromarray(a.astype(np.uint8), "RGBA")
 
 
-def figure(img, w, h, scale, cx, crop_y=None, fade=None, top=None):
+def figure(img, w, h, scale, cx, crop_y=None, fade=None, top=None, gaps=()):
     if crop_y is not None:
         img = img.crop((0, 0, img.width, int(crop_y)))
-    rgba = cutout_rgba(img, bottom=False)
+    rgba = cutout_rgba(img, bottom=False, gaps=gaps)
     if fade is not None:
         rgba = fade_pale(rgba, fade)
     box = rgba.getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox()
@@ -258,8 +260,9 @@ def main():
     elif kind == "figure":
         crop = float(args[4]) if len(args) > 4 and args[4] != "-" else None
         fade = tuple(int(v) for v in args[5].split(",")) if len(args) > 5 and args[5] != "-" else None
-        top = float(args[6]) if len(args) > 6 else None
-        save(figure(img, int(args[0]), int(args[1]), float(args[2]), float(args[3]), crop, fade, top), dst)
+        top = float(args[6]) if len(args) > 6 and args[6] != "-" else None
+        gaps = [tuple(int(v) for v in p.split(",")) for p in args[7].split(";")] if len(args) > 7 else ()
+        save(figure(img, int(args[0]), int(args[1]), float(args[2]), float(args[3]), crop, fade, top, gaps), dst)
     elif kind == "cutout":
         holes = len(args) > 2 and args[2] == "holes"
         save(fit(cutout_rgba(img, holes=holes), int(args[0]), int(args[1])), dst)

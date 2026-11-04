@@ -22,6 +22,8 @@ Tests:
     godot --headless --path . res://tests/olive_test.tscn
     godot --headless --path . res://tests/harvest_test.tscn
     godot --headless --path . res://tests/words_test.tscn
+    godot --headless --path . res://tests/balloon_test.tscn
+    godot --headless --path . res://tests/leaps_test.tscn
     godot --headless --path . res://tests/translations_test.tscn
     godot --path . res://tests/screenshots.tscn -- --out=C:/some/folder --size=1280x720 --lang=bg
 

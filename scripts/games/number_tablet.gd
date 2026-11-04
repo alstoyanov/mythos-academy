@@ -9,6 +9,8 @@ const PICTURE := "greek/olive_harvest/number_tablet.png"
 
 var value := 0
 var glowing := false
+var selected := false  ## chosen: a gold plate behind it (the sign in Hercules' Leaps)
+var caption := ""  ## written instead of the number (the "+" and "−" of Hercules' Leaps)
 var _time := randf() * TAU
 var _wobble := 0.0
 
@@ -40,7 +42,17 @@ func _draw() -> void:
 		var pulse := 0.5 + 0.5 * sin(_time * 5.0)
 		draw_circle(rect.get_center(), size.x * 0.62, Color(1.0, 0.97, 0.86, 0.45 + 0.2 * pulse))
 		draw_arc(rect.get_center(), size.x * (0.63 + 0.04 * pulse), 0.0, TAU, 48, Color(1.0, 0.8, 0.2, 0.9), 5.0, true)
-	draw_tablet(self, rect, value)
+	if selected:
+		_draw_plate(rect)
+	draw_tablet(self, rect, value, caption)
+
+
+## The gold plate behind a chosen tablet.
+func _draw_plate(rect: Rect2) -> void:
+	var plate := StyleBoxFlat.new()
+	plate.bg_color = Color(1.0, 0.8, 0.2, 0.95)
+	plate.set_corner_radius_all(20)
+	draw_style_box(plate, rect.grow(5.0))
 
 
 static var _style: StyleBoxFlat
@@ -49,8 +61,8 @@ static var _looked := false
 
 
 ## Draws a tablet with `value` filling `rect` on `ci` (in its _draw): the picture, or a drawn one. A
-## negative value is a number still to be found: "?".
-static func draw_tablet(ci: Control, rect: Rect2, value: int) -> void:
+## negative value is a number still to be found: "?". `text_instead`, if given, is written instead of the number.
+static func draw_tablet(ci: Control, rect: Rect2, value: int, text_instead: String = "") -> void:
 	if not _looked:
 		_picture = Ui.picture(PICTURE)
 		_looked = true
@@ -59,7 +71,7 @@ static func draw_tablet(ci: Control, rect: Rect2, value: int) -> void:
 	else:
 		ci.draw_style_box(_box(), rect.grow(-rect.size.x * 0.08))
 	var font := ci.get_theme_default_font()
-	var text := str(value) if value >= 0 else "?"
+	var text := text_instead if text_instead != "" else (str(value) if value >= 0 else "?")
 	var fs := int(rect.size.y * 0.5)
 	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	ci.draw_string(font, rect.get_center() + Vector2(-w / 2.0, fs * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs,

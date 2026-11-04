@@ -78,10 +78,13 @@ func _texts() -> Array[String]:
 	for key in ["MODE_NAMES", "INSTRUCTIONS", "PRAISE"]:
 		for line: String in words.get_script_constant_map()[key]:
 			_add(out, line)
-	for game in ["olive_harvest", "demeter_harvest"]:
+	for game in ["olive_harvest", "demeter_harvest", "aeolus_balloons", "hercules_leaps"]:
 		var script: GDScript = load("res://scripts/games/%s.gd" % game)
 		for line: String in script.get_script_constant_map()["LEVEL_NAMES"]:
 			_add(out, line)
+	var balloons: GDScript = load("res://scripts/games/aeolus_balloons.gd")
+	for line: String in balloons.get_script_constant_map()["GOAL_NAMES"]:
+		_add(out, line)
 	var harvest: GDScript = load("res://scripts/games/demeter_harvest.gd")
 	for line: String in harvest.get_script_constant_map()["PRAISE"]:
 		_add(out, line)

@@ -17,7 +17,13 @@
          "scene": "res://scenes/games/olive_harvest.tscn"},
         {"id": "demeter_harvest", "title": "Demeter's Harvest", "skill": "Adding and taking away within 20; the equal sign",
          "blurb": "Find the number that balances Demeter's harvest scale.", "status": "ready",
-         "scene": "res://scenes/games/demeter_harvest.tscn"}
+         "scene": "res://scenes/games/demeter_harvest.tscn"},
+        {"id": "aeolus_balloons", "title": "Aeolus' Balloons", "skill": "Putting numbers in order, from smallest to biggest and back",
+         "blurb": "Swap neighbouring balloons to line them up in order.", "status": "ready",
+         "scene": "res://scenes/games/aeolus_balloons.tscn"},
+        {"id": "hercules_leaps", "title": "Hercules' Leaps", "skill": "Adding and taking away: finding the sign and the number",
+         "blurb": "Choose + or − and a number to help Hercules leap across the chasm.", "status": "ready",
+         "scene": "res://scenes/games/hercules_leaps.tscn"}
       ]
     },
     {
