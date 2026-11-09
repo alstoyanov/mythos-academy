@@ -397,6 +397,59 @@ number; across a chasm is a cliff with another. Scripts: `scripts/games/leap_rul
   (`assets/prompts/E_MUSES_WORDS.md`): the 100 word pictures come as 7 sheets of 16 that
   `tools/prepare_art.py sheet` cuts apart. All of it is in the game.
 
+### 5.4b The Mosaic of Words — Language, the Grove of the Muses (built)
+
+*Clio, the Muse of history, keeps her words in a scroll basket, and the words have hidden themselves in
+an old floor mosaic covered with letter tiles. Find them all, and the mosaic shows its picture!*
+
+- **Skill:** reading words letter by letter and finding them among other letters (a word search);
+  recognising capital letters; reading across and down. **Bulgarian only:** the letters and words are
+  Bulgarian whatever the game's language (only the texts around them are translated).
+- **Chosen before playing** (a parent or teacher; kept while the game runs), with the best stars of
+  that choice shown:
+  - **the size:** 5 × 8, 6 × 9, 7 × 10 or 8 × 12 (rows × columns), with 4, 5, 6 or 8 words;
+  - **the direction:** only across (left to right), or across and down (top to bottom; at least one
+    word each way). Never backwards or diagonal: a first grader reads a word the usual way;
+  - **the letters:** the first 10 letters of the alphabet (А to Й), the first 20 (А to У) or all 30.
+    The words, and the random letters around them, use only those.
+- **Words:** the words of The Muses' Words (`data/words.json`: the 100 picture words and the extra
+  words) and `data/word_mosaic.json` (16 more, mostly of the first 10 letters: баба, бебе, ваза, еж,
+  звезди, жега, забава, …), with only the chosen letters and no longer than the rectangle. Two in three
+  have a picture where there are enough. Two words in a rectangle never hide in one another (кит,
+  китара) nor start alike (жаба, жаби).
+- **The rectangle:** the words do not cross, nor touch end to end on the same line; the random letters
+  never spell a word of the basket a second time (across or down: each word is in exactly one place),
+  nor a rude word (`MosaicRules.AVOID`).
+- **The basket:** at the start the word cards fly out of Clio's basket one after another, in capitals
+  as in the mosaic, to two columns at the top right. A card found turns gold with a tick, a ring of the
+  word's colour and its picture.
+- **Playing:** drag from a word's first letter to its last (the line snaps to the row, or to the column
+  when words go down), or tap the first letter, then the last; a tap off its line starts again there,
+  a second tap on it forgets it. Arrows and Enter do the same with a keyboard or gamepad.
+  - **Right:** a ring of the word's colour goes round it, its tiles turn to glass and show the piece of
+    the mosaic underneath (the letters stay, white with a dark edge), Clio is happy and the word is read
+    aloud ("Браво! жаба").
+  - **Part of a word:** "Почти! Думата е по-дълга." — not a mistake.
+  - **Wrong:** the line flashes orange and fades, Clio thinks: "Това не е от думите в кошницата.
+    Потърси пак!". After two wrong lines since the last word found, the first letter of the first word
+    not found glows, and its card: "Виж! Думата „ВЛАК“ започва оттук." The **Hint** button does the same
+    at any time.
+- **The mosaic:** when all the words are found, every tile opens in a wave from the top left corner,
+  showing the whole picture, and Clio names it ("Виж! Това е Пегас, крилатият кон!"). Six mosaics, one
+  at random each time (not the same twice in a row): Pegasus, the owl of Athena, the dolphin of
+  Poseidon, the lyre of Apollo, the ship Argo, Mount Olympus. Until a mosaic's picture is made the game
+  draws a simple stand-in (the sun over the sea, the moon and stars, hills with a temple) and does not
+  name it ("Виж цялата мозайка!").
+- **Stars:** for the help needed (wrong lines and hints asked for): at most 2 → 3 stars, at most 5 → 2,
+  else 1 — never none. A fanfare, "Мозайката е готова!", "New best!", Play again (a new mosaic, the same
+  choices) or Change game. Back returns to the choices. No timer; nothing is taken away.
+- **Sounds:** the sounds of §9.4a: a whoosh per card out of the basket, a pop for a first letter tapped,
+  the sparkle burst for a word, a soft knock for a wrong line, a fanfare.
+- **Built:** `scenes/games/word_mosaic.tscn` (`scripts/games/word_mosaic.gd`; the rules in
+  `mosaic_rules.gd`, the rectangle in `mosaic_grid.gd`, the cards in `mosaic_word_card.gd`). Its
+  pictures (`assets/images/greek/word_mosaic/`) are part H of the prompts (`assets/prompts/H_WORD_MOSAIC.md`);
+  all of them are in the game (each still has a drawn stand-in). Test: `tests/mosaic_test.tscn`.
+
 ### 5.5 Next: Odysseus' Voyage — Geography, the Islands of Odysseus
 
 *Odysseus is lost at sea. Give him the directions home, one step at a time.*
@@ -476,7 +529,7 @@ mythos-academy/
   assets/
     images/                 the art (see assets/prompts/IMAGE_PROMPTS.md for every file)
     prompts/                IMAGE_PROMPTS.md (the index), A_MENUS.md, B_ZEUS_THUNDERBOLTS.md, C_LATER_GAMES.md,
-                            D_DEMETER_HARVEST.md, E_MUSES_WORDS.md
+                            D_DEMETER_HARVEST.md, E_MUSES_WORDS.md, ..., H_WORD_MOSAIC.md
   tests/                    navigation test, screenshots
   docs/SPECIFICATION.md     this document
 ```
@@ -586,6 +639,12 @@ Settings and saved.
   with the same first letter and about the same length, four different pictures, no word again
   soon, the hint), then the screen (a wrong word read back and dimmed, the hint, the right word, the
   other game, the end of a round and its own best).
+- `tests/mosaic_test.tscn` (headless): The Mosaic of Words' words (each set of letters has enough, none
+  has a rude word in it), the rectangles of every size, direction and set of letters over many seeds
+  (the number of words, only the letters chosen, straight words that neither cross nor touch end to end,
+  each readable in one place only, nothing rude), the lines selected (forwards and backwards, part of a
+  word, wrong, the hint, the stars), then the screen (the choices, the cards out of the basket, a drag
+  and two taps, the hint, the mosaic opening, its stars kept).
 - `tests/thunderbolt_test.tscn` (headless): Zeus' Thunderbolts' rules over many rounds (2–4 different
   numbers in range, the goal switching every 3 rounds, nothing taken away, the hint after two wrong
   picks), then the screen (wrong taps, the hint, a right tap, new clouds).
@@ -600,7 +659,8 @@ Settings and saved.
 2. **Art for the menus** (done): the pictures of `assets/prompts/A_MENUS.md`; markers placed on them.
 3. **Zeus' Thunderbolts** (built; its art: part B). **Olive Harvest** (built; its art: part C1).
    **Demeter's Harvest** (built; its art: part D).
-   **The Muses' Words** (Language; built; its art: part E).
+   **The Muses' Words** (Language; built; its art: part E). **The Mosaic of Words** (Language; built;
+   its art: part H).
 4. **Mini game frame**: the contract of §6, the guide, stars, progress saving, sound.
 5. **Temple Builder**, then **The Muses' Letters** (with voice).
 6. Android and Windows builds; testing with first graders; then Odysseus' Voyage.

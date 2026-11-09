@@ -1,0 +1,22 @@
+{
+ "format_version": 1,
+ "_about": "More words for The Mosaic of Words (the word search), besides the words of data/words.json (the picture words and the extra words, Bulgarian only). Mostly words made only of the first 10 letters (А to Й), so that a mosaic of those letters has enough words. \"picture\": the picture shown on the word's card once it is found (assets/images/words/<picture>.png); none if it has no picture.",
+ "words": [
+  {"word": "баба", "picture": "grandma"},
+  {"word": "баби", "picture": "grandma"},
+  {"word": "бебе", "picture": "baby"},
+  {"word": "ваза", "picture": "vase"},
+  {"word": "вази", "picture": "vase"},
+  {"word": "еж", "picture": "hedgehog"},
+  {"word": "ежи", "picture": "hedgehog"},
+  {"word": "бизе", "picture": "meringue"},
+  {"word": "жаби", "picture": "frog"},
+  {"word": "звезди", "picture": "star"},
+  {"word": "вежда"},
+  {"word": "вежди"},
+  {"word": "жега"},
+  {"word": "жажда"},
+  {"word": "забава"},
+  {"word": "газ"}
+ ]
+}

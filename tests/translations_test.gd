@@ -82,6 +82,12 @@ func _texts() -> Array[String]:
 		var script: GDScript = load("res://scripts/games/%s.gd" % game)
 		for line: String in script.get_script_constant_map()["LEVEL_NAMES"]:
 			_add(out, line)
+	var mosaic: GDScript = load("res://scripts/games/word_mosaic.gd")
+	for key in ["PRAISE", "DIRECTION_NAMES", "LETTER_NAMES"]:
+		for line: String in mosaic.get_script_constant_map()[key]:
+			_add(out, line)
+	for m: Array in mosaic.get_script_constant_map()["MOSAICS"]:
+		_add(out, m[1])
 	var balloons: GDScript = load("res://scripts/games/aeolus_balloons.gd")
 	for line: String in balloons.get_script_constant_map()["GOAL_NAMES"]:
 		_add(out, line)

@@ -7,7 +7,7 @@ In Bulgarian (first) and English.
 - `docs/SPECIFICATION.md`: what the game is, its screens, the proposed Grade 1 mini games, the
   technical design.
 - `assets/prompts/IMAGE_PROMPTS.md`: the index of the image prompts — one file per part (the menus,
-  Zeus' Thunderbolts, the later games, Demeter's Harvest, The Muses' Words), with the file names the game looks for under `assets/images/`.
+  Zeus' Thunderbolts, the later games, Demeter's Harvest, The Muses' Words, The Mosaic of Words, …), with the file names the game looks for under `assets/images/`.
 
 Built so far: the title screen, settings, the world map (one land per grade), the map of Ancient Greece
 with its four learning areas, and each area's list of planned mini games. The mini games themselves
@@ -22,6 +22,7 @@ Tests:
     godot --headless --path . res://tests/olive_test.tscn
     godot --headless --path . res://tests/harvest_test.tscn
     godot --headless --path . res://tests/words_test.tscn
+    godot --headless --path . res://tests/mosaic_test.tscn
     godot --headless --path . res://tests/balloon_test.tscn
     godot --headless --path . res://tests/leaps_test.tscn
     godot --headless --path . res://tests/spoken_test.tscn

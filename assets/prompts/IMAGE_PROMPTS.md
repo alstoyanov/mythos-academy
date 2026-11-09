@@ -1,6 +1,6 @@
 # Mythos Academy — image prompts
 
-One complete prompt for every picture of the game, ready to copy: nothing needs to be filled in. The prompts are in seven files:
+One complete prompt for every picture of the game, ready to copy: nothing needs to be filled in. The prompts are in eight files:
 
 | Part | File | Pictures | State |
 |---|---|---|---|
@@ -11,6 +11,7 @@ One complete prompt for every picture of the game, ready to copy: nothing needs 
 | E — The Muses' Words (Language) | [E_MUSES_WORDS.md](E_MUSES_WORDS.md) | 12 prompts: 100 word pictures on 7 sheets, and 5 more | done: in the game |
 | F — Aeolus' Balloons (Arithmetic) | [F_AEOLUS_BALLOONS.md](F_AEOLUS_BALLOONS.md) | 2 (both optional: the balloons are drawn by the game) | done: in the game |
 | G — Hercules' Leaps (Arithmetic) | [G_HERCULES_LEAPS.md](G_HERCULES_LEAPS.md) | 7 | done: in the game |
+| H — The Mosaic of Words (Language) | [H_WORD_MOSAIC.md](H_WORD_MOSAIC.md) | 14 prompts: the background, Clio (3), her basket, a letter tile (optional), 6 mosaics, the game card, 5 word pictures on one sheet | done: in the game |
 
 How to use them:
 

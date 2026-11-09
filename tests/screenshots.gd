@@ -276,6 +276,46 @@ func _ready() -> void:
 	await _shot("12_leaps_landed_%s" % tag)
 	await _wait(1.8)
 	await _shot("12_leaps_next_%s" % tag)
+	# The Mosaic of Words: the choices, the cards out of the basket, words found and the hint, the mosaic
+	App.go("res://scenes/games/word_mosaic.tscn")
+	await _wait(0.6)
+	await _shot("13_mosaic_choose_%s" % tag)
+	var mosaic := get_tree().current_scene
+	mosaic.call("_choose", "size", 3)
+	mosaic.call("_choose", "down", 1)
+	mosaic.call("_choose", "letters", 1)
+	await _wait(0.2)
+	await _shot("13_mosaic_choices_%s" % tag)
+	mosaic.call("_start")
+	await _wait(0.5)
+	await _shot("13_mosaic_basket_%s" % tag)
+	await _wait(2.2)
+	var mrules: MosaicRules = mosaic.get("_rules")
+	var mgrid: MosaicGrid = mosaic.get("_grid")
+	for i in 3:
+		var cells: Array[Vector2i] = []
+		cells.assign(mrules.words[i]["cells"])
+		mgrid.selected.emit(cells)
+	var taken := {}
+	for w in mrules.words:
+		for c: Vector2i in w["cells"]:
+			taken[c] = true
+	for y in mrules.rows:
+		var wrong := mrules.line(Vector2i(0, y), Vector2i(1, y))
+		if not taken.has(wrong[0]) and not taken.has(wrong[1]):
+			mgrid.selected.emit(wrong)
+			mgrid.selected.emit(wrong)
+			break
+	await _wait(0.9)
+	await _shot("13_mosaic_found_%s" % tag)
+	for i in range(3, mrules.words.size()):
+		var cells: Array[Vector2i] = []
+		cells.assign(mrules.words[i]["cells"])
+		mgrid.selected.emit(cells)
+	await _wait(1.6)
+	await _shot("13_mosaic_opening_%s" % tag)
+	await _wait(2.4)
+	await _shot("13_mosaic_done_%s" % tag)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://screenshot_progress.cfg"))
 	get_tree().quit()
 

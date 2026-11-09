@@ -49,6 +49,9 @@
         {"id": "muses_words", "title": "The Muses' Words", "skill": "Reading simple words",
          "blurb": "Read the word and find its picture, or find the word for the picture.", "status": "ready",
          "scene": "res://scenes/games/muses_words.tscn"},
+        {"id": "word_mosaic", "title": "The Mosaic of Words", "skill": "Finding and reading hidden words",
+         "blurb": "Find the words from Clio's basket hidden among the letters, and uncover the mosaic.", "status": "ready",
+         "scene": "res://scenes/games/word_mosaic.tscn"},
         {"id": "muses_letters", "title": "The Muses' Letters", "skill": "Letter sounds and first letters of words",
          "blurb": "The Muses lost their letters: find the letter each picture starts with.", "status": "planned"}
       ]
